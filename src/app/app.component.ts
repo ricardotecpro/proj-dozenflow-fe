@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { KanbanBoardComponent } from './components/kanban-board/kanban-board.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [KanbanBoardComponent], // This import suggests the template uses <app-kanban-board>
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'dozenflow-fe';
-}
+export class AppComponent {}

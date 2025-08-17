@@ -1,0 +1,3 @@
+# Normalize all text files to use LF line endings.
+# This prevents issues and warnings when working across different operating systems (Windows, macOS, Linux).
+* text=auto eol=lf

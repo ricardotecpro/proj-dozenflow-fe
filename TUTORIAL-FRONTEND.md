@@ -21,21 +21,21 @@ Nosso objetivo é criar uma Single-Page Application (SPA) que:
 
 ## 📦 Módulo 1: Configurando o Projeto Angular
 
-Vamos começar criando nosso projeto Angular dentro da pasta `frontend` do nosso monorepo.
+Vamos começar criando nosso projeto Angular dentro da pasta `frontend`.
 
-### ### 1. Pré-requisitos
+### 1. Pré-requisitos
 
 - **Node.js** (versão 20 ou superior) instalado.
 - **Angular CLI** instalado globalmente: `npm install -g @angular/cli`
 
-### ### 2. Criando a Aplicação Angular
+### 2. Criando a Aplicação Angular
 
 1.  Abra um terminal na raiz do seu projeto (`dozenflow-project/`).
 2.  Navegue para a pasta `frontend` (se ela não existir, crie-a).
 3.  Execute o seguinte comando para criar o projeto:
 
 ```bash
-ng new dozenflow-fe --directory . --standalone --routing --style=scss --skip-tests
+ng new dozenflow-fe --directory . --standalone --style=scss --skip-tests
 ```
 
 **Analisando o comando:**
@@ -46,7 +46,7 @@ ng new dozenflow-fe --directory . --standalone --routing --style=scss --skip-tes
 - `--style=scss`: Define SCSS como o pré-processador de estilo padrão.
 - `--skip-tests`: Pula a geração de arquivos de teste (`.spec.ts`) para simplificar nosso tutorial.
 
-### ### 3. Estrutura de Pastas do Frontend
+### 3. Estrutura de Pastas do Frontend
 
 Após a criação, a estrutura da sua pasta `frontend` ficará assim:
 
@@ -72,14 +72,14 @@ Após a criação, a estrutura da sua pasta `frontend` ficará assim:
 
 ## 🧩 Módulo 2: Componentes, Serviços e Modelos
 
-Agora, vamos criar os blocos de construção da nossa aplicação.
+Agora vamos criar os blocos de construção da nossa aplicação.
 
-### ### 1. Instalando o Angular CDK
+### 1. Instalando o Angular CDK
 
 O Component Dev Kit (CDK) nos fornece a diretiva de drag-and-drop. Para instalá-lo, rode o comando no terminal, dentro da pasta `frontend/`:
 
 ```bash
-ng add @angular/cdk
+ng add @angular/cdk@18
 ```
 
 ### ### 2. Definindo os Modelos de Dados
@@ -180,7 +180,13 @@ Vamos agora dar vida ao nosso quadro Kanban.
   <!-- Coluna A FAZER -->
   <div class="kanban-column">
     <h2>A Fazer</h2>
-    <div cdkDropList [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
+    <div
+      cdkDropList
+      id="todoList"
+      [cdkDropListData]="todoTasks"
+      class="task-list"
+      (cdkDropListDropped)="drop($event)"
+    >
       <div class="task-card" *ngFor="let task of todoTasks" cdkDrag>{{ task.title }}</div>
     </div>
   </div>
@@ -188,7 +194,13 @@ Vamos agora dar vida ao nosso quadro Kanban.
   <!-- Coluna EM ANDAMENTO -->
   <div class="kanban-column">
     <h2>Em Andamento</h2>
-    <div cdkDropList [cdkDropListData]="inProgressTasks" class="task-list" (cdkDropListDropped)="drop($event)">
+    <div
+      cdkDropList
+      id="inProgressList"
+      [cdkDropListData]="inProgressTasks"
+      class="task-list"
+      (cdkDropListDropped)="drop($event)"
+    >
       <div class="task-card" *ngFor="let task of inProgressTasks" cdkDrag>{{ task.title }}</div>
     </div>
   </div>
@@ -196,7 +208,13 @@ Vamos agora dar vida ao nosso quadro Kanban.
   <!-- Coluna CONCLUÍDA -->
   <div class="kanban-column">
     <h2>Concluída</h2>
-    <div cdkDropList [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
+    <div
+      cdkDropList
+      id="doneList"
+      [cdkDropListData]="doneTasks"
+      class="task-list"
+      (cdkDropListDropped)="drop($event)"
+    >
       <div class="task-card" *ngFor="let task of doneTasks" cdkDrag>{{ task.title }}</div>
     </div>
   </div>
@@ -288,9 +306,12 @@ export class KanbanBoardComponent implements OnInit {
 
   loadTasks(): void {
     this.taskService.getTasks().subscribe(tasks => {
-      this.todoTasks = tasks.filter(t => t.status === TaskStatus.A_FAZER);
-      this.inProgressTasks = tasks.filter(t => t.status === TaskStatus.EM_ANDAMENTO);
-      this.doneTasks = tasks.filter(t => t.status === TaskStatus.CONCLUIDA);
+      // Garante que a ordem seja consistente com o backend
+      const sortedTasks = tasks.sort((a, b) => a.taskOrder - b.taskOrder);
+
+      this.todoTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.A_FAZER);
+      this.inProgressTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.EM_ANDAMENTO);
+      this.doneTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.CONCLUIDA);
     });
   }
 
@@ -310,22 +331,24 @@ export class KanbanBoardComponent implements OnInit {
 
     // Atualiza o status e a ordem da tarefa movida
     const movedTask = event.container.data[event.currentIndex];
-    const newStatus = this.getNewStatus(event.container.id);
+    const newStatus = this.getStatusFromContainerId(event.container.id);
     
     if (newStatus) {
       const updatedTask: Partial<Task> = { ...movedTask, status: newStatus, taskOrder: event.currentIndex };
       this.taskService.updateTask(movedTask.id, updatedTask).subscribe({
-        next: () => console.log('Task updated successfully'),
-        error: (err) => console.error('Failed to update task', err)
+        next: () => console.log(`Task "${updatedTask.title}" updated successfully.`),
+        error: (err: any) => console.error('Failed to update task', err)
       });
     }
   }
 
-  private getNewStatus(containerId: string): TaskStatus | null {
-    if (containerId.includes('todo')) return TaskStatus.A_FAZER;
-    if (containerId.includes('inProgress')) return TaskStatus.EM_ANDAMENTO;
-    if (containerId.includes('done')) return TaskStatus.CONCLUIDA;
-    return null;
+  private getStatusFromContainerId(containerId: string): TaskStatus | null {
+    switch (containerId) {
+      case 'todoList': return TaskStatus.A_FAZER;
+      case 'inProgressList': return TaskStatus.EM_ANDAMENTO;
+      case 'doneList': return TaskStatus.CONCLUIDA;
+      default: return null;
+    }
   }
 }
 ```
