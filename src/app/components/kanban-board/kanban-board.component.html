@@ -1,15 +1,17 @@
 <div class="kanban-board" cdkDropListGroup>
   <!-- Coluna A FAZER -->
   <div class="kanban-column">
-    <h2>A Fazer</h2>
+    <h2>📝 A Fazer</h2>
     <div cdkDropList id="todoList" [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
       <div class="task-card" *ngFor="let task of todoTasks" cdkDrag>{{ task.title }}</div>
+      <!-- Mensagem de Estado Vazio -->
+      <div *ngIf="todoTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
   </div>
 
   <!-- Coluna EM ANDAMENTO -->
   <div class="kanban-column">
-    <h2>Em Andamento</h2>
+    <h2>🚀 Em Andamento</h2>
     <div
       cdkDropList
       id="inProgressList"
@@ -18,14 +20,18 @@
       (cdkDropListDropped)="drop($event)"
     >
       <div class="task-card" *ngFor="let task of inProgressTasks" cdkDrag>{{ task.title }}</div>
+      <!-- Mensagem de Estado Vazio -->
+      <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
   </div>
 
   <!-- Coluna CONCLUÍDA -->
   <div class="kanban-column">
-    <h2>Concluída</h2>
+    <h2>✅ Concluída</h2>
     <div cdkDropList id="doneList" [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
       <div class="task-card" *ngFor="let task of doneTasks" cdkDrag>{{ task.title }}</div>
+      <!-- Mensagem de Estado Vazio -->
+      <div *ngIf="doneTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
   </div>
 </div>

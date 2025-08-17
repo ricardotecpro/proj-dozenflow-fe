@@ -1,1 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Default (Light Theme)
+:root {
+  --background-primary: #f4f7f9;
+  --background-secondary: #ebecf0;
+  --background-card: #ffffff;
+  --text-primary: #172b4d;
+  --text-secondary: #42526e;
+  --border-color: #dfe1e6;
+  --shadow-color: rgba(9, 30, 66, 0.25);
+  --accent-color: #007bff;
+}
+
+// Dark Theme
+body.dark-theme {
+  --background-primary: #1d2125;
+  --background-secondary: #282c34;
+  --background-card: #212529;
+  --text-primary: #c5c8c6;
+  --text-secondary: #969896;
+  --border-color: #3a3f44;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --accent-color: #61afef;
+}
+
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}

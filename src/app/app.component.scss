@@ -1,9 +1,19 @@
+.app-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 2rem;
+  background-color: var(--background-card);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
 .main-container {
   display: flex;
   justify-content: center;
   padding: 2rem;
   width: 100%;
-  min-height: 100vh;
   box-sizing: border-box;
-  background-color: #f4f7f9; // Um fundo suave para destacar o quadro
 }
