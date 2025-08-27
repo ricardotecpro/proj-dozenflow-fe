@@ -388,3 +388,7 @@ Você deverá ver seu quadro Kanban funcional, com as tarefas carregadas da API.
 
 Parabéns! Você construiu uma aplicação full-stack completa com um backend Spring Boot e um frontend Angular moderno.
 ```
+
+---
+
+Migração para Organização.
