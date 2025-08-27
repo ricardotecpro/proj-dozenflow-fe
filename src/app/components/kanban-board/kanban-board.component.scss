@@ -1,78 +1,85 @@
 .kanban-board {
   display: flex;
-  justify-content: space-around;
   gap: 20px;
   width: 100%;
   max-width: 1200px;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .kanban-column {
   flex: 1;
-  background-color: var(--background-secondary);
+  background-color: rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 15px;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
 
   h2 {
     text-align: center;
-    color: var(--text-primary);
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 1.2rem;
     font-weight: 600;
     padding: 0.5rem;
-    border-radius: 8px;
-    background-color: rgba(0, 0, 0, 0.02);
   }
 }
 
 .task-list {
   min-height: 400px;
-  background-color: transparent;
   border-radius: 4px;
-  padding: 10px;
   transition: background-color 0.2s ease;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .task-card {
-  background-color: var(--background-card);
-  padding: 15px;
   margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px var(--shadow-color);
   cursor: grab;
-  border-left: 4px solid transparent;
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+    box-shadow 0.2s ease;
+  position: relative;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px var(--shadow-color);
-    border-left-color: var(--accent-color);
+
+    .delete-button {
+      opacity: 1;
+    }
   }
 
   &:active {
     cursor: grabbing;
   }
-}
 
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  transform: rotate(3deg);
+  .mat-mdc-card-content {
+    padding: 16px;
+  }
 }
 
 .cdk-drag-placeholder {
-  opacity: 0;
+  opacity: 0.2;
 }
 
 .cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Highlight effect when dragging over a column */
+.task-list.cdk-drop-list-receiving {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* The cdk-drop-list-receiving class is added to the list that is being dragged over.
+   We need a specific rule for dark theme to ensure visibility. */
+body.dark-theme .task-list.cdk-drop-list-receiving {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -81,32 +88,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed var(--border-color);
+  border: 2px dashed;
   border-radius: 8px;
-  color: var(--text-secondary);
   text-align: center;
   padding: 20px;
   margin: 5px 0;
   font-style: italic;
   transition: all 0.3s ease;
+  color: rgba(0, 0, 0, 0.54);
 }
 
-/* Highlight effect when dragging over a column */
-.task-list.cdk-drop-list-receiving .empty-list-message {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+.dark-theme .empty-list-message {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.task-list.cdk-drop-list-receiving {
-  background-color: rgba(0, 0, 0, 0.05);
+.add-button {
+  margin-top: 1rem;
+  width: 100%;
 }
 
-/* The cdk-drop-list-receiving class is added to the list that is being dragged over.
-   We need a specific rule for dark theme to ensure visibility. */
-body.dark-theme .task-list.cdk-drop-list-receiving {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.task-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+.delete-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }

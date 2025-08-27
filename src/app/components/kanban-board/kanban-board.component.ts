@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { Observable, forkJoin, take } from 'rxjs';
 import { Task, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
+import { TaskDialogComponent, TaskDialogData } from '../task-dialog/task-dialog.component';
 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
 })
@@ -16,8 +21,12 @@ export class KanbanBoardComponent implements OnInit {
   todoTasks: Task[] = [];
   inProgressTasks: Task[] = [];
   doneTasks: Task[] = [];
+  public TaskStatus = TaskStatus; // Torna o enum acessível para o template
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    public dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -88,6 +97,50 @@ export class KanbanBoardComponent implements OnInit {
         return TaskStatus.CONCLUIDA;
       default:
         return null;
+    }
+  }
+
+  openTaskDialog(task?: Task, taskList?: Task[], status?: TaskStatus): void {
+    const isNew = !task;
+    const dialogData: TaskDialogData = {
+      // Se for uma nova tarefa, cria um objeto vazio. Se for edição, cria uma cópia para não modificar o objeto original antes de salvar.
+      task: isNew ? { title: '', description: '' } : { ...task },
+      enableDelete: !isNew,
+    };
+
+    const dialogRef = this.dialog.open(TaskDialogComponent, {
+      width: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((result: Partial<Task> | undefined) => {
+      if (!result) {
+        return;
+      }
+
+      if (result.id) {
+        // Atualiza uma tarefa existente
+        this.taskService.updateTask(result.id, result).subscribe(() => this.loadTasks());
+      } else {
+        // Cria uma nova tarefa, garantindo que tenha status e ordem
+        if (status && taskList) {
+          const newTask: Partial<Task> = {
+            ...result,
+            status: status,
+            taskOrder: taskList.length, // Adiciona a nova tarefa no final da lista
+          };
+          this.taskService.createTask(newTask).subscribe(() => this.loadTasks());
+        }
+      }
+    });
+  }
+
+  deleteTask(task: Task): void {
+    if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
+      this.taskService.deleteTask(task.id).subscribe({
+        next: () => this.loadTasks(),
+        error: (err) => console.error('Falha ao excluir a tarefa', err),
+      });
     }
   }
 }

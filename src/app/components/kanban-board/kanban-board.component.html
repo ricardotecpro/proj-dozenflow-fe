@@ -3,10 +3,18 @@
   <div class="kanban-column">
     <h2>📝 A Fazer</h2>
     <div cdkDropList id="todoList" [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card" *ngFor="let task of todoTasks" cdkDrag>{{ task.title }}</div>
+      <mat-card class="task-card" *ngFor="let task of todoTasks" cdkDrag (click)="openTaskDialog(task)">
+        <mat-card-content>{{ task.title }}</mat-card-content>
+        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card>
       <!-- Mensagem de Estado Vazio -->
       <div *ngIf="todoTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
+    <button mat-stroked-button class="add-button" (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)">
+      + Adicionar Tarefa
+    </button>
   </div>
 
   <!-- Coluna EM ANDAMENTO -->
@@ -19,19 +27,39 @@
       class="task-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="task-card" *ngFor="let task of inProgressTasks" cdkDrag>{{ task.title }}</div>
+      <mat-card class="task-card" *ngFor="let task of inProgressTasks" cdkDrag (click)="openTaskDialog(task)">
+        <mat-card-content>{{ task.title }}</mat-card-content>
+        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card>
       <!-- Mensagem de Estado Vazio -->
       <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
+    <button
+      mat-stroked-button
+      class="add-button"
+      (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
+    >
+      + Adicionar Tarefa
+    </button>
   </div>
 
   <!-- Coluna CONCLUÍDA -->
   <div class="kanban-column">
     <h2>✅ Concluída</h2>
     <div cdkDropList id="doneList" [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card" *ngFor="let task of doneTasks" cdkDrag>{{ task.title }}</div>
+      <mat-card class="task-card" *ngFor="let task of doneTasks" cdkDrag (click)="openTaskDialog(task)">
+        <mat-card-content>{{ task.title }}</mat-card-content>
+        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card>
       <!-- Mensagem de Estado Vazio -->
       <div *ngIf="doneTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
     </div>
+    <button mat-stroked-button class="add-button" (click)="openTaskDialog(undefined, doneTasks, TaskStatus.CONCLUIDA)">
+      + Adicionar Tarefa
+    </button>
   </div>
 </div>

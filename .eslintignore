@@ -1,0 +1,5 @@
+# Build artifacts
+/dist
+
+# This is not an Angular component template and should not be linted.
+/src/index.html
