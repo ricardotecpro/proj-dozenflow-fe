@@ -1,6 +1,9 @@
-<div class="theme-switch-wrapper">
-  <label class="theme-switch" for="checkbox">
-    <input type="checkbox" id="checkbox" [checked]="themeService.isDarkMode()" (change)="toggleTheme()" />
-    <div class="slider round"></div>
-  </label>
+<div class="theme-toggle-container">
+  <mat-icon>light_mode</mat-icon>
+  <mat-slide-toggle
+    [checked]="(isDarkMode$ | async) === true"
+    (change)="onThemeChange($event.checked)"
+    aria-label="Toggle dark mode"
+  ></mat-slide-toggle>
+  <mat-icon>dark_mode</mat-icon>
 </div>

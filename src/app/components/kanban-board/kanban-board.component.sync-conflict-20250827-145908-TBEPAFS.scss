@@ -9,32 +9,19 @@
 
 .kanban-column {
   flex: 1;
+  background-color: rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 15px;
   display: flex;
   flex-direction: column;
 
-  /* Efeito Glassmorphism */
-  background-color: color-mix(in srgb, var(--background-secondary) 70%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); /* Suporte para Safari */
-  border: 1px solid color-mix(in srgb, var(--text-primary) 5%, transparent);
-}
-
-.column-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 8px 12px;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 16px;
-
   h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
-    // Garante que o H2 herde a fonte 'Inter' definida globalmente no tema.
-    font-family: inherit;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.5rem;
   }
 }
 
@@ -48,9 +35,29 @@
   overflow-y: auto;
 }
 
-.task-card-wrapper {
-  display: block;
+.task-card {
   margin-bottom: 10px;
+  cursor: grab;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .delete-button {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  .mat-mdc-card-content {
+    padding: 16px;
+  }
 }
 
 .cdk-drag-placeholder {
@@ -77,24 +84,33 @@ body.dark-theme .task-list.cdk-drop-list-receiving {
 }
 
 .empty-list-message {
-  flex-direction: column;
   flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed var(--border-color);
+  border: 2px dashed;
   border-radius: 8px;
   text-align: center;
   padding: 20px;
   margin: 5px 0;
   font-style: italic;
   transition: all 0.3s ease;
-  color: var(--text-secondary);
-  gap: 8px;
+  color: rgba(0, 0, 0, 0.54);
+}
 
-  .mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-  }
+.dark-theme .empty-list-message {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.add-button {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.delete-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }

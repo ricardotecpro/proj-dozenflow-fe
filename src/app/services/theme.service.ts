@@ -1,41 +1,37 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
   private renderer: Renderer2;
-  private currentTheme: 'light' | 'dark';
+  private readonly _isDarkMode = new BehaviorSubject<boolean>(false);
+  readonly isDarkMode$ = this._isDarkMode.asObservable();
 
-  constructor(rendererFactory: RendererFactory2) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    rendererFactory: RendererFactory2,
+  ) {
     this.renderer = rendererFactory.createRenderer(null, null);
-    this.currentTheme = this.getInitialTheme();
-    this.applyTheme(this.currentTheme);
+    this.loadInitialTheme();
   }
 
-  private getInitialTheme(): 'light' | 'dark' {
-    const storedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-    if (storedTheme) {
-      return storedTheme;
-    }
-    // Fallback para a preferência do sistema do usuário
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  private loadInitialTheme(): void {
+    const storedPreference = localStorage.getItem('isDarkMode');
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    const initialDarkMode = storedPreference !== null ? storedPreference === 'true' : !!prefersDark;
+    this.setDarkMode(initialDarkMode);
   }
 
-  isDarkMode(): boolean {
-    return this.currentTheme === 'dark';
-  }
-
-  toggleTheme(): void {
-    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-    this.applyTheme(this.currentTheme);
-    localStorage.setItem('theme', this.currentTheme);
-  }
-
-  private applyTheme(theme: 'light' | 'dark'): void {
-    this.renderer.removeClass(document.body, 'dark-theme'); // Limpa o estado anterior
-    if (theme === 'dark') {
-      this.renderer.addClass(document.body, 'dark-theme');
+  setDarkMode(isDark: boolean): void {
+    this._isDarkMode.next(isDark);
+    localStorage.setItem('isDarkMode', String(isDark));
+    if (isDark) {
+      this.renderer.addClass(this.document.body, 'dark-theme');
+    } else {
+      this.renderer.removeClass(this.document.body, 'dark-theme');
     }
   }
 }

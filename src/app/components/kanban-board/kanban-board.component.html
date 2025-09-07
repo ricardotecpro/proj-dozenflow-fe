@@ -1,65 +1,73 @@
 <div class="kanban-board" cdkDropListGroup>
-  <!-- Coluna A FAZER -->
+  <!-- Coluna A Fazer -->
   <div class="kanban-column">
-    <h2>📝 A Fazer</h2>
-    <div cdkDropList id="todoList" [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <mat-card class="task-card" *ngFor="let task of todoTasks" cdkDrag (click)="openTaskDialog(task)">
-        <mat-card-content>{{ task.title }}</mat-card-content>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-card>
-      <!-- Mensagem de Estado Vazio -->
-      <div *ngIf="todoTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
+    <div class="column-header">
+      <h2>A Fazer</h2>
+      <button
+        mat-icon-button
+        (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
+        matTooltip="Adicionar nova tarefa"
+      >
+        <mat-icon>add_circle</mat-icon>
+      </button>
     </div>
-    <button mat-stroked-button class="add-button" (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)">
-      + Adicionar Tarefa
-    </button>
+    <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
+      <div class="task-card-wrapper" *ngFor="let task of todoTasks" cdkDrag>
+        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+      </div>
+      <div *ngIf="todoTasks.length === 0" class="empty-list-message">
+        <mat-icon>inbox</mat-icon>
+        <span>Nenhuma tarefa aqui.</span>
+      </div>
+    </div>
   </div>
 
-  <!-- Coluna EM ANDAMENTO -->
+  <!-- Coluna Em Andamento -->
   <div class="kanban-column">
-    <h2>🚀 Em Andamento</h2>
+    <div class="column-header">
+      <h2>Em Andamento</h2>
+      <button
+        mat-icon-button
+        (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
+        matTooltip="Adicionar nova tarefa"
+      >
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </div>
     <div
-      cdkDropList
       id="inProgressList"
+      cdkDropList
       [cdkDropListData]="inProgressTasks"
       class="task-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <mat-card class="task-card" *ngFor="let task of inProgressTasks" cdkDrag (click)="openTaskDialog(task)">
-        <mat-card-content>{{ task.title }}</mat-card-content>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-card>
-      <!-- Mensagem de Estado Vazio -->
-      <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
+      <div class="task-card-wrapper" *ngFor="let task of inProgressTasks" cdkDrag>
+        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+      </div>
+      <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">
+        <mat-icon>inbox</mat-icon>
+        <span>Nenhuma tarefa aqui.</span>
+      </div>
     </div>
-    <button
-      mat-stroked-button
-      class="add-button"
-      (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
-    >
-      + Adicionar Tarefa
-    </button>
   </div>
 
-  <!-- Coluna CONCLUÍDA -->
+  <!-- Coluna Concluída -->
   <div class="kanban-column">
-    <h2>✅ Concluída</h2>
-    <div cdkDropList id="doneList" [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <mat-card class="task-card" *ngFor="let task of doneTasks" cdkDrag (click)="openTaskDialog(task)">
-        <mat-card-content>{{ task.title }}</mat-card-content>
-        <button mat-icon-button class="delete-button" (click)="deleteTask(task); $event.stopPropagation()">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-card>
-      <!-- Mensagem de Estado Vazio -->
-      <div *ngIf="doneTasks.length === 0" class="empty-list-message">Arraste as tarefas aqui</div>
+    <div class="column-header">
+      <h2>Concluída</h2>
+      <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
     </div>
-    <button mat-stroked-button class="add-button" (click)="openTaskDialog(undefined, doneTasks, TaskStatus.CONCLUIDA)">
-      + Adicionar Tarefa
-    </button>
+    <div id="doneList" cdkDropList [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
+      <div class="task-card-wrapper" *ngFor="let task of doneTasks" cdkDrag>
+        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+      </div>
+      <div *ngIf="doneTasks.length === 0" class="empty-list-message">
+        <mat-icon>inbox</mat-icon>
+        <span>Nenhuma tarefa aqui.</span>
+      </div>
+    </div>
   </div>
 </div>

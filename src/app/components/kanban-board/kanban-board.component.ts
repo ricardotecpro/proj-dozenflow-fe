@@ -5,15 +5,28 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable, forkJoin, take } from 'rxjs';
 import { Task, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 import { TaskDialogComponent, TaskDialogData } from '../task-dialog/task-dialog.component';
+import { TaskCardComponent } from '../task-card/task-card.component';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [CommonModule, DragDropModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    DragDropModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
+    TaskCardComponent,
+  ],
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
 })
@@ -120,7 +133,10 @@ export class KanbanBoardComponent implements OnInit {
 
       if (result.id) {
         // Atualiza uma tarefa existente
-        this.taskService.updateTask(result.id, result).subscribe(() => this.loadTasks());
+        this.taskService.updateTask(result.id, result).subscribe({
+          next: () => this.loadTasks(),
+          error: (err) => console.error('Falha ao atualizar a tarefa.', err),
+        });
       } else {
         // Cria uma nova tarefa, garantindo que tenha status e ordem
         if (status && taskList) {
@@ -129,18 +145,30 @@ export class KanbanBoardComponent implements OnInit {
             status: status,
             taskOrder: taskList.length, // Adiciona a nova tarefa no final da lista
           };
-          this.taskService.createTask(newTask).subscribe(() => this.loadTasks());
+          this.taskService.createTask(newTask).subscribe({
+            next: () => this.loadTasks(),
+            error: (err) => console.error('Falha ao criar a tarefa.', err),
+          });
         }
       }
     });
   }
 
   deleteTask(task: Task): void {
-    if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
-      this.taskService.deleteTask(task.id).subscribe({
-        next: () => this.loadTasks(),
-        error: (err) => console.error('Falha ao excluir a tarefa', err),
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirmar Exclusão',
+        message: `Tem certeza que deseja excluir a tarefa "${task.title}"?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.taskService.deleteTask(task.id).subscribe({
+          next: () => this.loadTasks(),
+          error: (err) => console.error('Falha ao excluir a tarefa', err),
+        });
+      }
+    });
   }
 }

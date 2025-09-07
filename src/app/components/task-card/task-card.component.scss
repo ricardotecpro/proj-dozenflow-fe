@@ -1,0 +1,40 @@
+.task-card {
+  cursor: grab;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  background-color: var(--background-card);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  .mat-mdc-card-header {
+    padding: 16px 8px 8px 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1rem;
+    line-height: 1.4;
+    flex-grow: 1;
+    word-break: break-word;
+  }
+
+  .mat-mdc-card-content {
+    padding: 0 16px 16px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+}
+
+.task-menu-button {
+  margin-left: 8px;
+  flex-shrink: 0;
+}

@@ -1,13 +1,26 @@
 .app-header {
-  display: flex;
-  justify-content: flex-end;
-  padding: 1rem 2rem;
-  background-color: var(--background-card);
-  box-shadow: 0 2px 4px var(--shadow-color);
+  // O mat-toolbar já tem display: flex e align-items: center.
+  // Apenas garantimos que nossos estilos customizados sejam aplicados.
   position: sticky;
   top: 0;
   z-index: 1000;
   transition: background-color 0.3s ease;
+
+  /* Efeito Glassmorphism */
+  // Sobrescreve o fundo padrão do toolbar
+  background-color: color-mix(in srgb, var(--background-card) 60%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
+  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+}
+
+.app-header span:first-child {
+  // Dá mais destaque ao título principal da aplicação.
+  font-weight: 500;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
 }
 
 .main-container {
