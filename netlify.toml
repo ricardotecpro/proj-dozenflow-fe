@@ -1,0 +1,9 @@
+
+[build]
+  command = "ng build --configuration production"
+  publish = "dist/dozenflow-fe"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://dozenflow-be.onrender.com/api/:splat"
+  status = 200
