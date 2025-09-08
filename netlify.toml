@@ -1,7 +1,6 @@
-
 [build]
   command = "ng build --configuration production"
-  publish = "dist/dozenflow-fe"
+  publish = "dist/dozenflow-fe/browser"
 
 [[redirects]]
   from = "/api/*"
