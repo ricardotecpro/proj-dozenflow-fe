@@ -53,6 +53,10 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   `@typescript-eslint` 8.x, que ainda não suporta o TypeScript 6.0 exigido
   pelo Angular 22 — fica para quando o ecossistema `@typescript-eslint`
   alcançar essa versão do TypeScript.
+- Esse mesmo conflito de peer dependency fazia `npm ci` falhar (o `npm
+  install` incremental usado durante o desenvolvimento não acusava o
+  problema). Contornado com `legacy-peer-deps=true` em `.npmrc`; remover
+  quando `@angular-eslint` for atualizado.
 
 ### Removed
 - Arquivo residual de conflito de sincronização de nuvem
