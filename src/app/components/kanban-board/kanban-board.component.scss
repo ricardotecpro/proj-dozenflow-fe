@@ -18,9 +18,13 @@
 }
 
 .kanban-column {
-  flex: 1;
-  border-radius: 12px;
-  padding: 15px;
+  // Largura fixa estreita, igual às listas do Trello (~272px), em vez de
+  // esticar pra preencher o espaço — cards ficam com o tamanho/proporção
+  // certos em vez de "esparramados".
+  flex: 0 0 272px;
+  width: 272px;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
 

@@ -25,18 +25,25 @@ describe('TaskCardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders the task title and description', () => {
+  it('renders the task title', () => {
     const text = fixture.nativeElement.textContent as string;
     expect(text).toContain('Write specs');
-    expect(text).toContain('Cover the kanban board components');
   });
 
-  it('does not render the content section when there is no description', () => {
+  it('shows a description indicator when the task has a description (Trello-style, no inline text)', () => {
+    const text = fixture.nativeElement.textContent as string;
+    const footer = fixture.debugElement.query(By.css('.task-card-footer'));
+
+    expect(footer).not.toBeNull();
+    expect(text).not.toContain('Cover the kanban board components');
+  });
+
+  it('does not render the description indicator when there is no description', () => {
     component.task = { ...task, description: '' };
     fixture.detectChanges();
 
-    const content = fixture.debugElement.query(By.css('mat-card-content'));
-    expect(content).toBeNull();
+    const footer = fixture.debugElement.query(By.css('.task-card-footer'));
+    expect(footer).toBeNull();
   });
 
   it('emits edit when edit() is triggered', () => {

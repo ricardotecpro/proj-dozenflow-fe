@@ -1,6 +1,6 @@
-<mat-card class="task-card" [attr.data-status]="task.status">
-  <mat-card-header>
-    <mat-card-title>{{ task.title }}</mat-card-title>
+<mat-card class="task-card">
+  <div class="task-card-body">
+    <p class="task-card-title">{{ task.title }}</p>
     <button
       mat-icon-button
       [matMenuTriggerFor]="taskMenu"
@@ -9,20 +9,20 @@
     >
       <mat-icon>more_vert</mat-icon>
     </button>
-    <mat-menu #taskMenu="matMenu">
-      <button mat-menu-item (click)="edit.emit()">
-        <mat-icon>edit</mat-icon>
-        <span>Editar</span>
-      </button>
-      <button mat-menu-item (click)="delete.emit()">
-        <mat-icon>delete</mat-icon>
-        <span>Excluir</span>
-      </button>
-    </mat-menu>
-  </mat-card-header>
+  </div>
   @if (task.description) {
-    <mat-card-content>
-      <p>{{ task.description }}</p>
-    </mat-card-content>
+    <div class="task-card-footer" matTooltip="Tem descrição">
+      <mat-icon>subject</mat-icon>
+    </div>
   }
+  <mat-menu #taskMenu="matMenu">
+    <button mat-menu-item (click)="edit.emit()">
+      <mat-icon>edit</mat-icon>
+      <span>Editar</span>
+    </button>
+    <button mat-menu-item (click)="delete.emit()">
+      <mat-icon>delete</mat-icon>
+      <span>Excluir</span>
+    </button>
+  </mat-menu>
 </mat-card>
