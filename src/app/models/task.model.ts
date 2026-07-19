@@ -17,4 +17,5 @@ export interface Task {
   labels: Label[];
   checklistTotal: number;
   checklistDone: number;
+  commentCount: number;
 }

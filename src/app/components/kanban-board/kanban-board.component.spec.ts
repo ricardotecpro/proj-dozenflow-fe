@@ -14,6 +14,7 @@ function makeTask(overrides: Partial<Task> & Pick<Task, 'id' | 'title' | 'status
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
+    commentCount: 0,
     ...overrides,
   };
 }

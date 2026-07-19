@@ -17,6 +17,7 @@ describe('TaskCardComponent', () => {
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
+    commentCount: 0,
   };
 
   function isoDateOffsetBy(days: number): string {
@@ -146,6 +147,21 @@ describe('TaskCardComponent', () => {
 
     const badge = fixture.debugElement.query(By.css('.checklist-badge'));
     expect(badge.classes['checklist-complete']).toBeTrue();
+  });
+
+  it('does not show a comment count when commentCount is 0', () => {
+    component.task = { ...task, description: '', commentCount: 0 };
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.comment-count'))).toBeNull();
+  });
+
+  it('shows the comment count when there are comments', () => {
+    component.task = { ...task, description: '', commentCount: 4 };
+    fixture.detectChanges();
+
+    const badge = fixture.debugElement.query(By.css('.comment-count'));
+    expect(badge.nativeElement.textContent).toContain('4');
   });
 
   it('emits edit when edit() is triggered', () => {

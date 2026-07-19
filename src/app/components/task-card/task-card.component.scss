@@ -145,3 +145,17 @@
     color: #ffffff;
   }
 }
+
+// Contador de comentários — só ícone + número, sem fundo (estilo Trello).
+.comment-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}

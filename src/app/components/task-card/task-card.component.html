@@ -17,7 +17,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>
-  @if (task.description || dueDateStatus || task.checklistTotal) {
+  @if (task.description || dueDateStatus || task.checklistTotal || task.commentCount) {
     <div class="task-card-footer">
       @if (dueDateStatus) {
         <span class="due-date-pill" [class]="dueDateStatus" matTooltip="Data de vencimento">
@@ -33,6 +33,12 @@
         >
           <mat-icon>checklist</mat-icon>
           {{ task.checklistDone }}/{{ task.checklistTotal }}
+        </span>
+      }
+      @if (task.commentCount) {
+        <span class="comment-count" matTooltip="Comentários">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          {{ task.commentCount }}
         </span>
       }
       @if (task.description) {

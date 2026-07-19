@@ -8,6 +8,12 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Comentários nas tarefas: nova aba "Comentários" no diálogo de edição
+  (`app-comment-list`) com lista (corpo + horário relativo, ex. "há 3
+  horas") e campo pra adicionar; ícone de balão + contador no card quando
+  há comentários. Sem edição, só adicionar/excluir — qualquer pessoa pode
+  excluir qualquer comentário, mesmo modelo sem dono já usado em
+  labels/checklist.
 - Checklist nas tarefas: editor de checklist (`app-checklist-editor`, novo)
   com checkbox por item, adicionar/remover, e um contador "X/Y concluídos";
   badge "☑ 2/5" no card (fica verde quando 100% concluído). O diálogo de

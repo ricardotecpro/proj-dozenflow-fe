@@ -13,6 +13,7 @@ import { Task } from '../../models/task.model';
 import { Label } from '../../models/label.model';
 import { LabelPickerComponent } from '../label-picker/label-picker.component';
 import { ChecklistEditorComponent } from '../checklist-editor/checklist-editor.component';
+import { CommentListComponent } from '../comment-list/comment-list.component';
 
 export interface TaskDialogData {
   task: Partial<Task>;
@@ -33,6 +34,7 @@ export interface TaskDialogData {
     MatTabsModule,
     LabelPickerComponent,
     ChecklistEditorComponent,
+    CommentListComponent,
   ],
   templateUrl: './task-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
