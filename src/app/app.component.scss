@@ -15,15 +15,12 @@
   background-color: var(--board-background, var(--background-primary));
   color: var(--board-foreground, var(--text-primary));
 
-  // mat-icon (fonte Material Icons) herda `color` normalmente, mas os
-  // componentes Material com token próprio (icon-button, slide-toggle)
-  // não seguem a cor do ancestral por padrão — forçamos aqui.
+  // Os ícones dentro dos widgets do header (tema, paleta) definem sua
+  // própria cor via token do Material com maior especificidade que a
+  // herança normal — precisa de !important pra realmente seguir a cor do
+  // header (branca sobre board colorido, ou a do tema no padrão).
   ::ng-deep .mat-icon {
-    color: inherit;
-  }
-
-  ::ng-deep .mat-mdc-icon-button {
-    --mat-icon-button-icon-color: currentColor;
+    color: inherit !important;
   }
 }
 
