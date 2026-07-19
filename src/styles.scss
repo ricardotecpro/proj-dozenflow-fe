@@ -63,7 +63,10 @@ $dozenflow-tertiary: mat.$violet-palette;
 
 /* Global styles */
 body {
-  background-color: var(--background-primary);
+  // --board-background é setado via BoardBackgroundService (inline style,
+  // maior especificidade possível) quando o usuário escolhe uma cor de
+  // fundo customizada para o board; sem escolha, cai no fundo do tema.
+  background-color: var(--board-background, var(--background-primary));
   color: var(--text-primary);
   transition:
     background-color 0.3s ease,

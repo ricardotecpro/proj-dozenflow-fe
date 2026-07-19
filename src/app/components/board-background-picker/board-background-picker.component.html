@@ -1,0 +1,30 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="bgMenu"
+  matTooltip="Cor de fundo do board"
+  aria-label="Escolher cor de fundo do board"
+>
+  <mat-icon>palette</mat-icon>
+</button>
+
+<mat-menu #bgMenu="matMenu" class="board-background-menu">
+  <div class="swatches">
+    @for (option of options; track option.id) {
+      <button
+        type="button"
+        class="swatch"
+        [class.swatch-default]="!option.color"
+        [style.background-color]="option.color"
+        [matTooltip]="option.name"
+        [attr.aria-label]="option.name"
+        (click)="select(option)"
+      >
+        @if (!option.color) {
+          <mat-icon>block</mat-icon>
+        } @else if ((selectedId$ | async) === option.id) {
+          <mat-icon>check</mat-icon>
+        }
+      </button>
+    }
+  </div>
+</mat-menu>
