@@ -12,14 +12,18 @@
       </button>
     </div>
     <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card-wrapper" *ngFor="let task of todoTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-      </div>
-      <div *ngIf="todoTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
-      </div>
+      @for (task of todoTasks; track task) {
+        <div class="task-card-wrapper" cdkDrag>
+          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      }
+      @if (todoTasks.length === 0) {
+        <div class="empty-list-message">
+          <mat-icon>inbox</mat-icon>
+          <span>Nenhuma tarefa aqui.</span>
+        </div>
+      }
     </div>
   </div>
 
@@ -42,14 +46,18 @@
       class="task-list"
       (cdkDropListDropped)="drop($event)"
     >
-      <div class="task-card-wrapper" *ngFor="let task of inProgressTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-      </div>
-      <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
-      </div>
+      @for (task of inProgressTasks; track task) {
+        <div class="task-card-wrapper" cdkDrag>
+          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      }
+      @if (inProgressTasks.length === 0) {
+        <div class="empty-list-message">
+          <mat-icon>inbox</mat-icon>
+          <span>Nenhuma tarefa aqui.</span>
+        </div>
+      }
     </div>
   </div>
 
@@ -60,14 +68,18 @@
       <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
     </div>
     <div id="doneList" cdkDropList [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card-wrapper" *ngFor="let task of doneTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-      </div>
-      <div *ngIf="doneTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
-      </div>
+      @for (task of doneTasks; track task) {
+        <div class="task-card-wrapper" cdkDrag>
+          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+        </div>
+      }
+      @if (doneTasks.length === 0) {
+        <div class="empty-list-message">
+          <mat-icon>inbox</mat-icon>
+          <span>Nenhuma tarefa aqui.</span>
+        </div>
+      }
     </div>
   </div>
 </div>

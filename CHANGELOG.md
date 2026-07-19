@@ -21,8 +21,18 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 - `.nvmrc` fixando a versão do Node usada pelo projeto.
 
 ### Changed
-- Dependências (Angular, Angular Material/CDK, CLI) atualizadas para as
-  versões estáveis mais recentes compatíveis.
+- Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
+  22.0.7 (upgrade incremental major a major, com as migrações automáticas
+  do próprio `ng update`), corrigindo vulnerabilidades XSS conhecidas do
+  Angular <=19.2 (ver `npm audit`).
+
+### Known issues
+- `npm audit` ainda aponta vulnerabilidades em dependências de
+  desenvolvimento (`webpack-dev-server`/`ws`/`yaml`, usadas só pelo
+  dev-server, não vão para o bundle de produção). Corrigi-las exigiria
+  `@typescript-eslint` 8.x, que ainda não suporta o TypeScript 6.0 exigido
+  pelo Angular 22 — fica para quando o ecossistema `@typescript-eslint`
+  alcançar essa versão do TypeScript.
 
 ### Removed
 - Arquivo residual de conflito de sincronização de nuvem

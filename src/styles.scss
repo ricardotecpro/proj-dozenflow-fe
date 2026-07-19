@@ -2,7 +2,8 @@
 @use '@angular/material' as mat;
 
 // Inclui o core do Material (reset, ripple, etc.) uma única vez.
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 // =======================
 // Definição da Tipografia

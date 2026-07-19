@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,9 +8,9 @@ import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'app-task-card',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatMenuModule],
   templateUrl: './task-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./task-card.component.scss'],
 })
 export class TaskCardComponent {

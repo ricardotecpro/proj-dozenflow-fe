@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
@@ -16,9 +16,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 
 @Component({
   selector: 'app-kanban-board',
-  standalone: true,
   imports: [
-    CommonModule,
     DragDropModule,
     MatCardModule,
     MatButtonModule,
@@ -28,6 +26,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
     TaskCardComponent,
   ],
   templateUrl: './kanban-board.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./kanban-board.component.scss'],
 })
 export class KanbanBoardComponent implements OnInit {
