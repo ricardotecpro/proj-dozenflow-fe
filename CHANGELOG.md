@@ -38,6 +38,21 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   header e cabeçalhos de coluna com mais peso/tracking, título do card de
   tarefa destacado da descrição, `<title>` da página corrigido de
   "DozenflowFe" (boilerplate) para "DozenFlow Board".
+- Visual/recursos "estilo Trello" (escopo alinhado com o usuário: só
+  frontend, sem mudar o modelo de dados do backend):
+  - Seletor de cor de fundo do board (`BoardBackgroundService` +
+    `BoardBackgroundPickerComponent`), com paleta inspirada nas cores
+    clássicas do Trello; escolha persistida em `localStorage`, aplicada via
+    a custom property `--board-background` (só o fundo do board muda — as
+    colunas/cards continuam com as cores do tema claro/escuro).
+  - Adição rápida de cartão ("+ Adicionar cartão") no rodapé das colunas
+    "A Fazer"/"Em Andamento": cria a tarefa só com título, sem abrir o
+    diálogo, e mantém o campo aberto para adicionar o próximo em seguida.
+    O diálogo completo (com descrição) continua disponível pelo ícone "+"
+    do cabeçalho da coluna.
+  - Badge com a contagem de tarefas em cada cabeçalho de coluna.
+  - Cards com cantos mais arredondados e sombra mais forte ao
+    arrastar/hover.
 
 ### Changed
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
