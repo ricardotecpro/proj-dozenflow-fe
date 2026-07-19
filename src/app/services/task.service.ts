@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Task } from '../models/task.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  // Usando o proxy para evitar problemas de CORS e URLs fixas
-  private apiUrl = '/api/tasks';
+  // Path relativo: proxy em dev (proxy.conf.json), redirect do Netlify em prod.
+  private apiUrl = `${environment.apiUrl}/tasks`;
 
   constructor(private http: HttpClient) {}
 

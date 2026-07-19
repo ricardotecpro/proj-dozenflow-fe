@@ -6,3 +6,25 @@
   from = "/api/*"
   to = "https://dozenflow-be.onrender.com/api/:splat"
   status = 200
+
+# Security headers. CSP allows 'unsafe-inline' for styles because Angular
+# Material injects inline style attributes for overlays/ripples at runtime;
+# tightening that further would require a nonce-based CSP setup.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data:;
+      connect-src 'self';
+      frame-ancestors 'none';
+      base-uri 'self';
+      form-action 'self';
+    """
