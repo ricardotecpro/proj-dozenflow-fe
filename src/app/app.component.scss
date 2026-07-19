@@ -4,14 +4,27 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: background-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 
-  /* Efeito Glassmorphism */
-  // Sobrescreve o fundo padrão do toolbar
-  background-color: color-mix(in srgb, var(--background-card) 60%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
-  border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+  // Estilo Trello: o header usa a MESMA cor do fundo do board (sem
+  // glassmorphism/blur), pra parecer uma continuação do board em vez de
+  // uma barra separada. --board-foreground vem do BoardBackgroundService
+  // (branco quando uma cor customizada está ativa).
+  background-color: var(--board-background, var(--background-primary));
+  color: var(--board-foreground, var(--text-primary));
+
+  // mat-icon (fonte Material Icons) herda `color` normalmente, mas os
+  // componentes Material com token próprio (icon-button, slide-toggle)
+  // não seguem a cor do ancestral por padrão — forçamos aqui.
+  ::ng-deep .mat-icon {
+    color: inherit;
+  }
+
+  ::ng-deep .mat-mdc-icon-button {
+    --mat-icon-button-icon-color: currentColor;
+  }
 }
 
 .app-header span:first-child {

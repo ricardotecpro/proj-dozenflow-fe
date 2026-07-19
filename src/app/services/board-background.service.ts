@@ -49,8 +49,12 @@ export class BoardBackgroundService {
     localStorage.setItem(STORAGE_KEY, option.id);
     if (option.color) {
       this.document.body.style.setProperty('--board-background', option.color);
+      // Todas as swatches são saturadas o bastante para texto/ícones brancos
+      // em cima, igual ao header do Trello sobre a cor do board.
+      this.document.body.style.setProperty('--board-foreground', '#ffffff');
     } else {
       this.document.body.style.removeProperty('--board-background');
+      this.document.body.style.removeProperty('--board-foreground');
     }
   }
 }
