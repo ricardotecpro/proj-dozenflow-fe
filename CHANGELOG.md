@@ -53,6 +53,14 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   - Badge com a contagem de tarefas em cada cabeçalho de coluna.
   - Cards com cantos mais arredondados e sombra mais forte ao
     arrastar/hover.
+  - Refino de fidelidade visual, depois de comparar com screenshots reais do
+    Trello: o header agora usa a mesma cor do fundo do board (com texto/
+    ícones brancos quando uma cor customizada está ativa), em vez de uma
+    barra clara com glassmorphism separada; as colunas ficaram opacas/flat
+    (sem blur), mais parecidas com as listas cinza-claro do Trello; o
+    estado vazio da lista perdeu o ícone grande/caixa tracejada/botão —
+    lista vazia agora é só espaço em branco, como no Trello (o "+
+    Adicionar cartão" já cobre a ação).
 
 ### Changed
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
