@@ -62,8 +62,9 @@
 
   h2 {
     margin: 0;
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
     // Garante que o H2 herde a fonte 'Inter' definida globalmente no tema.
     font-family: inherit;
   }

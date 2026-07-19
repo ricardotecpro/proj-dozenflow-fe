@@ -68,6 +68,11 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+
+  // Renderização mais nítida do Inter em telas de alta densidade.
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 // Diálogos full-screen em telas pequenas (ver KanbanBoardComponent.dialogConfig()).
