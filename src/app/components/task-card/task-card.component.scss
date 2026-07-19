@@ -5,6 +5,16 @@
     box-shadow 0.2s ease;
   position: relative;
   background-color: var(--background-card);
+  border-left: 4px solid var(--mat-sys-outline);
+
+  // Indicador de status por cor, alinhado ao TaskStatus do backend.
+  &[data-status='EM_ANDAMENTO'] {
+    border-left-color: var(--mat-sys-primary);
+  }
+
+  &[data-status='CONCLUIDA'] {
+    border-left-color: var(--mat-sys-tertiary);
+  }
 
   &:hover {
     transform: translateY(-2px);

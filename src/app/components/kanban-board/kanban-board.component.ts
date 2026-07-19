@@ -1,15 +1,19 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { MatDialog } from '@angular/material/dialog';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, forkJoin, take } from 'rxjs';
 import { Task, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
+import { NotificationService } from '../../services/notification.service';
 import { TaskDialogComponent, TaskDialogData } from '../task-dialog/task-dialog.component';
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
@@ -23,6 +27,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     TaskCardComponent,
   ],
   templateUrl: './kanban-board.component.html',
@@ -33,25 +38,52 @@ export class KanbanBoardComponent implements OnInit {
   todoTasks: Task[] = [];
   inProgressTasks: Task[] = [];
   doneTasks: Task[] = [];
+  loading = true;
   public TaskStatus = TaskStatus; // Torna o enum acessível para o template
 
   constructor(
     private taskService: TaskService,
     public dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver,
+    private notificationService: NotificationService,
   ) {}
+
+  /** Mensagem amigável para erros de rede/timeout (ex.: cold start do backend no Render). */
+  private friendlyErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof HttpErrorResponse && (err.status === 504 || err.status === 0)) {
+      return 'O servidor está iniciando, tente novamente em alguns segundos.';
+    }
+    return fallback;
+  }
+
+  /** Config de diálogo full-screen em telas pequenas, largura fixa em telas maiores. */
+  private dialogConfig(desktopWidth: string): MatDialogConfig {
+    const isHandset = this.breakpointObserver.isMatched(Breakpoints.Handset);
+    return isHandset
+      ? { width: '100vw', maxWidth: '100vw', height: '100%', panelClass: 'full-screen-dialog' }
+      : { width: desktopWidth };
+  }
 
   ngOnInit(): void {
     this.loadTasks();
   }
 
   loadTasks(): void {
-    this.taskService.getTasks().subscribe((tasks) => {
-      // Garante que a ordem seja consistente com o backend
-      const sortedTasks = tasks.sort((a, b) => a.taskOrder - b.taskOrder);
+    this.loading = true;
+    this.taskService.getTasks().subscribe({
+      next: (tasks) => {
+        // Garante que a ordem seja consistente com o backend
+        const sortedTasks = tasks.sort((a, b) => a.taskOrder - b.taskOrder);
 
-      this.todoTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.A_FAZER);
-      this.inProgressTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.EM_ANDAMENTO);
-      this.doneTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.CONCLUIDA);
+        this.todoTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.A_FAZER);
+        this.inProgressTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.EM_ANDAMENTO);
+        this.doneTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.CONCLUIDA);
+        this.loading = false;
+      },
+      error: (err: unknown) => {
+        this.loading = false;
+        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível carregar as tarefas.'));
+      },
     });
   }
 
@@ -89,9 +121,10 @@ export class KanbanBoardComponent implements OnInit {
       forkJoin(updates)
         .pipe(take(1))
         .subscribe({
-          next: () => console.log('Ordens das tarefas atualizadas com sucesso.'),
           error: (err: unknown) => {
-            console.error('Falha ao atualizar as tarefas, revertendo a UI.', err);
+            this.notificationService.error(
+              this.friendlyErrorMessage(err, 'Não foi possível mover a tarefa. Desfazendo a alteração.'),
+            );
             // Rollback simples: recarrega as tarefas do servidor para garantir consistência.
             this.loadTasks();
           },
@@ -121,7 +154,7 @@ export class KanbanBoardComponent implements OnInit {
     };
 
     const dialogRef = this.dialog.open(TaskDialogComponent, {
-      width: '400px',
+      ...this.dialogConfig('400px'),
       data: dialogData,
     });
 
@@ -133,8 +166,12 @@ export class KanbanBoardComponent implements OnInit {
       if (result.id) {
         // Atualiza uma tarefa existente
         this.taskService.updateTask(result.id, result).subscribe({
-          next: () => this.loadTasks(),
-          error: (err) => console.error('Falha ao atualizar a tarefa.', err),
+          next: () => {
+            this.loadTasks();
+            this.notificationService.success('Tarefa atualizada.');
+          },
+          error: (err: unknown) =>
+            this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível atualizar a tarefa.')),
         });
       } else {
         // Cria uma nova tarefa, garantindo que tenha status e ordem
@@ -145,8 +182,12 @@ export class KanbanBoardComponent implements OnInit {
             taskOrder: taskList.length, // Adiciona a nova tarefa no final da lista
           };
           this.taskService.createTask(newTask).subscribe({
-            next: () => this.loadTasks(),
-            error: (err) => console.error('Falha ao criar a tarefa.', err),
+            next: () => {
+              this.loadTasks();
+              this.notificationService.success('Tarefa criada.');
+            },
+            error: (err: unknown) =>
+              this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível criar a tarefa.')),
           });
         }
       }
@@ -155,6 +196,7 @@ export class KanbanBoardComponent implements OnInit {
 
   deleteTask(task: Task): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      ...this.dialogConfig('360px'),
       data: {
         title: 'Confirmar Exclusão',
         message: `Tem certeza que deseja excluir a tarefa "${task.title}"?`,
@@ -164,8 +206,12 @@ export class KanbanBoardComponent implements OnInit {
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.taskService.deleteTask(task.id).subscribe({
-          next: () => this.loadTasks(),
-          error: (err) => console.error('Falha ao excluir a tarefa', err),
+          next: () => {
+            this.loadTasks();
+            this.notificationService.success('Tarefa excluída.');
+          },
+          error: (err: unknown) =>
+            this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível excluir a tarefa.')),
         });
       }
     });

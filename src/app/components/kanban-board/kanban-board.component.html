@@ -1,85 +1,114 @@
-<div class="kanban-board" cdkDropListGroup>
-  <!-- Coluna A Fazer -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>A Fazer</h2>
-      <button
-        mat-icon-button
-        (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
-        matTooltip="Adicionar nova tarefa"
+@if (loading) {
+  <div class="board-loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Carregando tarefas…</p>
+  </div>
+} @else {
+  <div class="kanban-board" cdkDropListGroup>
+    <!-- Coluna A Fazer -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>A Fazer</h2>
+        <button
+          mat-icon-button
+          (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
+          matTooltip="Adicionar nova tarefa"
+          aria-label="Adicionar nova tarefa em A Fazer"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+      <div
+        id="todoList"
+        cdkDropList
+        [cdkDropListData]="todoTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
       >
-        <mat-icon>add_circle</mat-icon>
-      </button>
+        @for (task of todoTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
+        @if (todoTasks.length === 0) {
+          <div class="empty-list-message">
+            <mat-icon>inbox</mat-icon>
+            <span>Nenhuma tarefa aqui.</span>
+            <button mat-stroked-button (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)">
+              <mat-icon>add</mat-icon>
+              Adicionar tarefa
+            </button>
+          </div>
+        }
+      </div>
     </div>
-    <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      @for (task of todoTasks; track task) {
-        <div class="task-card-wrapper" cdkDrag>
-          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-        </div>
-      }
-      @if (todoTasks.length === 0) {
-        <div class="empty-list-message">
-          <mat-icon>inbox</mat-icon>
-          <span>Nenhuma tarefa aqui.</span>
-        </div>
-      }
-    </div>
-  </div>
 
-  <!-- Coluna Em Andamento -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>Em Andamento</h2>
-      <button
-        mat-icon-button
-        (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
-        matTooltip="Adicionar nova tarefa"
+    <!-- Coluna Em Andamento -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>Em Andamento</h2>
+        <button
+          mat-icon-button
+          (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
+          matTooltip="Adicionar nova tarefa"
+          aria-label="Adicionar nova tarefa em Em Andamento"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+      <div
+        id="inProgressList"
+        cdkDropList
+        [cdkDropListData]="inProgressTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
       >
-        <mat-icon>add_circle</mat-icon>
-      </button>
+        @for (task of inProgressTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
+        @if (inProgressTasks.length === 0) {
+          <div class="empty-list-message">
+            <mat-icon>inbox</mat-icon>
+            <span>Nenhuma tarefa aqui.</span>
+            <button mat-stroked-button (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)">
+              <mat-icon>add</mat-icon>
+              Adicionar tarefa
+            </button>
+          </div>
+        }
+      </div>
     </div>
-    <div
-      id="inProgressList"
-      cdkDropList
-      [cdkDropListData]="inProgressTasks"
-      class="task-list"
-      (cdkDropListDropped)="drop($event)"
-    >
-      @for (task of inProgressTasks; track task) {
-        <div class="task-card-wrapper" cdkDrag>
-          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-        </div>
-      }
-      @if (inProgressTasks.length === 0) {
-        <div class="empty-list-message">
-          <mat-icon>inbox</mat-icon>
-          <span>Nenhuma tarefa aqui.</span>
-        </div>
-      }
-    </div>
-  </div>
 
-  <!-- Coluna Concluída -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>Concluída</h2>
-      <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
-    </div>
-    <div id="doneList" cdkDropList [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      @for (task of doneTasks; track task) {
-        <div class="task-card-wrapper" cdkDrag>
-          <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-          <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-        </div>
-      }
-      @if (doneTasks.length === 0) {
-        <div class="empty-list-message">
-          <mat-icon>inbox</mat-icon>
-          <span>Nenhuma tarefa aqui.</span>
-        </div>
-      }
+    <!-- Coluna Concluída -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>Concluída</h2>
+        <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
+      </div>
+      <div
+        id="doneList"
+        cdkDropList
+        [cdkDropListData]="doneTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (task of doneTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
+        @if (doneTasks.length === 0) {
+          <div class="empty-list-message">
+            <mat-icon>inbox</mat-icon>
+            <span>Nenhuma tarefa aqui.</span>
+          </div>
+        }
+      </div>
     </div>
   </div>
-</div>
+}

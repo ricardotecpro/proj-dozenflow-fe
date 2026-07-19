@@ -1,7 +1,12 @@
-<mat-card class="task-card">
+<mat-card class="task-card" [attr.data-status]="task.status">
   <mat-card-header>
     <mat-card-title>{{ task.title }}</mat-card-title>
-    <button mat-icon-button [matMenuTriggerFor]="taskMenu" class="task-menu-button">
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="taskMenu"
+      class="task-menu-button"
+      [attr.aria-label]="'Mais ações para ' + task.title"
+    >
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #taskMenu="matMenu">
