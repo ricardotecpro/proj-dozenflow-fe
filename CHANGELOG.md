@@ -32,11 +32,12 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   para cards novos.
 - `aria-label` nos botões de ícone (adicionar tarefa por coluna, menu de
   ações do card).
-- Refino tipográfico: peso 600 (semibold) do Inter carregado (faltava entre
-  o 500 e o 700), `-webkit-font-smoothing`/`text-rendering` globais, título
-  do header e cabeçalhos de coluna com mais peso/tracking, título do card
-  de tarefa em semibold para se destacar da descrição, `<title>` da página
-  corrigido de "DozenflowFe" (boilerplate) para "DozenFlow Board".
+- Fonte trocada de Inter para Google Fonts Roboto (pesos 400/500/700 — o
+  Roboto clássico não tem 600, então os títulos usam 500/Medium em vez de
+  semibold). `-webkit-font-smoothing`/`text-rendering` globais, título do
+  header e cabeçalhos de coluna com mais peso/tracking, título do card de
+  tarefa destacado da descrição, `<title>` da página corrigido de
+  "DozenflowFe" (boilerplate) para "DozenFlow Board".
 
 ### Changed
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para

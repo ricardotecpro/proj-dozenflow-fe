@@ -8,7 +8,7 @@
 // =======================
 // Tipografia e paleta compartilhadas pelos dois temas
 // =======================
-$dozenflow-typography: '"Inter", "Roboto", "Helvetica Neue", Arial, sans-serif';
+$dozenflow-typography: '"Roboto", "Helvetica Neue", Arial, sans-serif';
 $dozenflow-primary: mat.$azure-palette;
 $dozenflow-tertiary: mat.$violet-palette;
 
@@ -69,7 +69,7 @@ body {
     background-color 0.3s ease,
     color 0.3s ease;
 
-  // Renderização mais nítida do Inter em telas de alta densidade.
+  // Renderização mais nítida do Roboto em telas de alta densidade.
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
