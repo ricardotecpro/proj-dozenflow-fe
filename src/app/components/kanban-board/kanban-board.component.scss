@@ -62,12 +62,30 @@
 
   h2 {
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 1.05rem;
     font-weight: 500;
     letter-spacing: -0.005em;
     // Garante que o H2 herde a fonte 'Roboto' definida globalmente no tema.
     font-family: inherit;
   }
+}
+
+// Badge com a contagem de tarefas da coluna (estilo Trello).
+.task-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .task-list {
@@ -143,4 +161,50 @@ body.dark-theme .task-list.cdk-drop-list-receiving {
   button {
     white-space: nowrap;
   }
+}
+
+// Adição rápida de cartão (estilo Trello: campo discreto no rodapé da lista).
+.quick-add-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  }
+}
+
+.quick-add {
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: var(--background-card);
+  border: 1px solid var(--border-color);
+}
+
+.quick-add-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  padding: 4px 0 8px;
+}
+
+.quick-add-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

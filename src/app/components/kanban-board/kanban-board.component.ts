@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -18,9 +19,12 @@ import { TaskDialogComponent, TaskDialogData } from '../task-dialog/task-dialog.
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
+type QuickAddKey = 'todo' | 'inProgress';
+
 @Component({
   selector: 'app-kanban-board',
   imports: [
+    FormsModule,
     DragDropModule,
     MatCardModule,
     MatButtonModule,
@@ -40,6 +44,14 @@ export class KanbanBoardComponent implements OnInit {
   doneTasks: Task[] = [];
   loading = true;
   public TaskStatus = TaskStatus; // Torna o enum acessível para o template
+
+  // Adição rápida de cartão (só título, estilo Trello) nas colunas
+  // "A Fazer"/"Em Andamento" — "Concluída" mantém a decisão de não permitir
+  // criar direto ali.
+  quickAdd: Record<QuickAddKey, { open: boolean; title: string }> = {
+    todo: { open: false, title: '' },
+    inProgress: { open: false, title: '' },
+  };
 
   constructor(
     private taskService: TaskService,
@@ -191,6 +203,33 @@ export class KanbanBoardComponent implements OnInit {
           });
         }
       }
+    });
+  }
+
+  openQuickAdd(key: QuickAddKey): void {
+    this.quickAdd[key].open = true;
+  }
+
+  cancelQuickAdd(key: QuickAddKey): void {
+    this.quickAdd[key] = { open: false, title: '' };
+  }
+
+  submitQuickAdd(key: QuickAddKey, taskList: Task[], status: TaskStatus): void {
+    const title = this.quickAdd[key].title.trim();
+    if (!title) {
+      return;
+    }
+
+    const newTask: Partial<Task> = { title, description: '', status, taskOrder: taskList.length };
+    this.taskService.createTask(newTask).subscribe({
+      next: () => {
+        this.loadTasks();
+        this.notificationService.success('Tarefa criada.');
+        // Mantém o campo aberto e limpo para adicionar o próximo cartão rapidamente.
+        this.quickAdd[key].title = '';
+      },
+      error: (err: unknown) =>
+        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível criar a tarefa.')),
     });
   }
 

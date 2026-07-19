@@ -6,6 +6,7 @@
   position: relative;
   background-color: var(--background-card);
   border-left: 4px solid var(--mat-sys-outline);
+  border-radius: 8px;
 
   // Indicador de status por cor, alinhado ao TaskStatus do backend.
   &[data-status='EM_ANDAMENTO'] {
@@ -18,6 +19,7 @@
 
   &:hover {
     transform: translateY(-2px);
+    box-shadow: var(--mat-sys-level3);
   }
 
   &:active {
@@ -43,6 +45,11 @@
     font-size: 0.9rem;
     line-height: 1.5;
     color: var(--text-secondary);
+  }
+
+  // Elevação mais forte enquanto o card está sendo arrastado.
+  &.cdk-drag-preview {
+    box-shadow: var(--mat-sys-level4);
   }
 }
 
