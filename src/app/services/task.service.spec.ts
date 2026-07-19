@@ -14,6 +14,7 @@ describe('TaskService', () => {
     description: 'Sample description',
     status: TaskStatus.A_FAZER,
     taskOrder: 0,
+    dueDate: null,
   };
 
   beforeEach(() => {

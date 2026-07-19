@@ -8,6 +8,12 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Data de vencimento opcional na tarefa: seletor de data (`MatDatepickerModule`,
+  locale `pt-BR`) no diálogo de edição, e um pill colorido no card mostrando
+  a data (cinza padrão, amarelo a ≤2 dias do prazo, vermelho se vencida,
+  verde se a tarefa está concluída). Primeiro de uma série de recursos
+  novos de card estilo Trello (labels, checklist, comentários e anexos vêm
+  a seguir).
 - `README.md` com instruções reais de setup, scripts e deploy.
 - `LICENSE` (MIT), `CONTRIBUTING.md` e este `CHANGELOG.md`.
 - `environment.ts`/`environment.prod.ts` deixando explícita a configuração

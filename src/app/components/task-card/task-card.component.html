@@ -10,9 +10,17 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>
-  @if (task.description) {
-    <div class="task-card-footer" matTooltip="Tem descrição">
-      <mat-icon>subject</mat-icon>
+  @if (task.description || dueDateStatus) {
+    <div class="task-card-footer">
+      @if (dueDateStatus) {
+        <span class="due-date-pill" [class]="dueDateStatus" matTooltip="Data de vencimento">
+          <mat-icon>schedule</mat-icon>
+          {{ dueDateLabel }}
+        </span>
+      }
+      @if (task.description) {
+        <mat-icon matTooltip="Tem descrição">subject</mat-icon>
+      }
     </div>
   }
   <mat-menu #taskMenu="matMenu">

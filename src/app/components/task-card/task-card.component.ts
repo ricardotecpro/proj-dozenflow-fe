@@ -5,7 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Task } from '../../models/task.model';
+import { Task, TaskStatus } from '../../models/task.model';
+
+export type DueDateStatus = 'overdue' | 'due-soon' | 'done' | 'default';
+
+const DUE_SOON_THRESHOLD_DAYS = 2;
 
 @Component({
   selector: 'app-task-card',
@@ -18,4 +22,39 @@ export class TaskCardComponent {
   @Input({ required: true }) task!: Task;
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+
+  get dueDateStatus(): DueDateStatus | null {
+    if (!this.task.dueDate) {
+      return null;
+    }
+    if (this.task.status === TaskStatus.CONCLUIDA) {
+      return 'done';
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((this.parseIsoDate(this.task.dueDate).getTime() - today.getTime()) / 86_400_000);
+
+    if (diffDays < 0) {
+      return 'overdue';
+    }
+    if (diffDays <= DUE_SOON_THRESHOLD_DAYS) {
+      return 'due-soon';
+    }
+    return 'default';
+  }
+
+  get dueDateLabel(): string {
+    if (!this.task.dueDate) {
+      return '';
+    }
+    return new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short' }).format(
+      this.parseIsoDate(this.task.dueDate),
+    );
+  }
+
+  private parseIsoDate(iso: string): Date {
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
 }

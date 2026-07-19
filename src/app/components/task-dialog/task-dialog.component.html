@@ -14,6 +14,14 @@
       <mat-label>Descrição</mat-label>
       <textarea matInput [(ngModel)]="data.task.description" name="description"></textarea>
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data de vencimento</mat-label>
+      <input matInput [matDatepicker]="dueDatePicker" [(ngModel)]="dueDateValue" name="dueDate" />
+      <mat-hint>DD/MM/AAAA</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #dueDatePicker></mat-datepicker>
+    </mat-form-field>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

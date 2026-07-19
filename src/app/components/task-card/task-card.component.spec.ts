@@ -13,7 +13,17 @@ describe('TaskCardComponent', () => {
     description: 'Cover the kanban board components',
     status: TaskStatus.A_FAZER,
     taskOrder: 0,
+    dueDate: null,
   };
+
+  function isoDateOffsetBy(days: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,6 +54,52 @@ describe('TaskCardComponent', () => {
 
     const footer = fixture.debugElement.query(By.css('.task-card-footer'));
     expect(footer).toBeNull();
+  });
+
+  it('does not show a due-date pill when there is no due date', () => {
+    component.task = { ...task, description: '', dueDate: null };
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.due-date-pill'))).toBeNull();
+  });
+
+  it('marks a future due date as default (not overdue/due-soon)', () => {
+    component.task = { ...task, description: '', dueDate: isoDateOffsetBy(10) };
+    fixture.detectChanges();
+
+    const pill = fixture.debugElement.query(By.css('.due-date-pill'));
+    expect(pill).not.toBeNull();
+    expect(pill.classes['default']).toBeTrue();
+  });
+
+  it('marks a due date within 2 days as due-soon', () => {
+    component.task = { ...task, description: '', dueDate: isoDateOffsetBy(1) };
+    fixture.detectChanges();
+
+    const pill = fixture.debugElement.query(By.css('.due-date-pill'));
+    expect(pill.classes['due-soon']).toBeTrue();
+  });
+
+  it('marks a past due date as overdue', () => {
+    component.task = { ...task, description: '', dueDate: isoDateOffsetBy(-1) };
+    fixture.detectChanges();
+
+    const pill = fixture.debugElement.query(By.css('.due-date-pill'));
+    expect(pill.classes['overdue']).toBeTrue();
+  });
+
+  it('marks the due date as done when the task is CONCLUIDA, even if the date is past', () => {
+    component.task = {
+      ...task,
+      description: '',
+      status: TaskStatus.CONCLUIDA,
+      dueDate: isoDateOffsetBy(-5),
+    };
+    fixture.detectChanges();
+
+    const pill = fixture.debugElement.query(By.css('.due-date-pill'));
+    expect(pill.classes['done']).toBeTrue();
+    expect(pill.classes['overdue']).toBeFalsy();
   });
 
   it('emits edit when edit() is triggered', () => {

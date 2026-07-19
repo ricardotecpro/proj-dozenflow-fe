@@ -10,4 +10,6 @@ export interface Task {
   description: string;
   status: TaskStatus;
   taskOrder: number;
+  /** ISO date string (yyyy-MM-dd), or null when no due date is set. */
+  dueDate: string | null;
 }
