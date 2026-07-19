@@ -22,6 +22,24 @@
       <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #dueDatePicker></mat-datepicker>
     </mat-form-field>
+
+    @if (data.task.id) {
+      <div class="label-row">
+        <span class="label-row-title">Labels</span>
+        @for (label of data.task.labels; track label.id) {
+          <span
+            class="label-chip"
+            [style.background-color]="label.colorHex"
+            [matTooltip]="label.name ?? 'Label sem nome'"
+          ></span>
+        }
+        <app-label-picker
+          [taskId]="data.task.id"
+          [selectedLabels]="data.task.labels ?? []"
+          (labelsChanged)="onLabelsChanged($event)"
+        ></app-label-picker>
+      </div>
+    }
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

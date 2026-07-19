@@ -1,4 +1,11 @@
 <mat-card class="task-card">
+  @if (task.labels.length) {
+    <div class="task-card-labels">
+      @for (label of task.labels; track label.id) {
+        <span class="label-bar" [style.background-color]="label.colorHex" [matTooltip]="label.name ?? ''"></span>
+      }
+    </div>
+  }
   <div class="task-card-body">
     <p class="task-card-title">{{ task.title }}</p>
     <button

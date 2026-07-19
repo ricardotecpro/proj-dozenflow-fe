@@ -21,10 +21,18 @@ describe('KanbanBoardComponent', () => {
     // array returned by getTasks() in place, so a shared array would leak
     // ordering between tests.
     tasks = [
-      { id: 1, title: 'Todo 1', description: '', status: TaskStatus.A_FAZER, taskOrder: 1, dueDate: null },
-      { id: 2, title: 'Todo 0', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: null },
-      { id: 3, title: 'In progress', description: '', status: TaskStatus.EM_ANDAMENTO, taskOrder: 0, dueDate: null },
-      { id: 4, title: 'Done', description: '', status: TaskStatus.CONCLUIDA, taskOrder: 0, dueDate: null },
+      { id: 1, title: 'Todo 1', description: '', status: TaskStatus.A_FAZER, taskOrder: 1, dueDate: null, labels: [] },
+      { id: 2, title: 'Todo 0', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: null, labels: [] },
+      {
+        id: 3,
+        title: 'In progress',
+        description: '',
+        status: TaskStatus.EM_ANDAMENTO,
+        taskOrder: 0,
+        dueDate: null,
+        labels: [],
+      },
+      { id: 4, title: 'Done', description: '', status: TaskStatus.CONCLUIDA, taskOrder: 0, dueDate: null, labels: [] },
     ];
 
     taskServiceSpy = jasmine.createSpyObj('TaskService', ['getTasks', 'createTask', 'updateTask', 'deleteTask']);

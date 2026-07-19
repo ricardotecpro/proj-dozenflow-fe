@@ -8,6 +8,13 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Labels coloridas nas tarefas: barras coloridas acima do título do card
+  (sem texto, estilo Trello compacto — o nome aparece só no tooltip),
+  seletor de labels (`app-label-picker`, novo) no diálogo de edição com um
+  grid de swatches do catálogo do board, aplicando/removendo a associação
+  imediatamente ao clicar (sem precisar salvar o diálogo). Só disponível
+  ao editar uma tarefa já existente — igual ao Trello, uma tarefa nova
+  precisa existir antes de poder receber labels.
 - Data de vencimento opcional na tarefa: seletor de data (`MatDatepickerModule`,
   locale `pt-BR`) no diálogo de edição, e um pill colorido no card mostrando
   a data (cinza padrão, amarelo a ≤2 dias do prazo, vermelho se vencida,

@@ -14,6 +14,7 @@ describe('TaskCardComponent', () => {
     status: TaskStatus.A_FAZER,
     taskOrder: 0,
     dueDate: null,
+    labels: [],
   };
 
   function isoDateOffsetBy(days: number): string {
@@ -100,6 +101,25 @@ describe('TaskCardComponent', () => {
     const pill = fixture.debugElement.query(By.css('.due-date-pill'));
     expect(pill.classes['done']).toBeTrue();
     expect(pill.classes['overdue']).toBeFalsy();
+  });
+
+  it('does not render label bars when the task has no labels', () => {
+    expect(fixture.debugElement.query(By.css('.task-card-labels'))).toBeNull();
+  });
+
+  it('renders one bar per label, colored by colorHex', () => {
+    component.task = {
+      ...task,
+      labels: [
+        { id: 1, name: null, colorHex: '#61bd4f' },
+        { id: 2, name: 'Urgente', colorHex: '#eb5a46' },
+      ],
+    };
+    fixture.detectChanges();
+
+    const bars = fixture.debugElement.queryAll(By.css('.label-bar'));
+    expect(bars.length).toBe(2);
+    expect((bars[0].nativeElement as HTMLElement).style.backgroundColor).toBe('rgb(97, 189, 79)');
   });
 
   it('emits edit when edit() is triggered', () => {

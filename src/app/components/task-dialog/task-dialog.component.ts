@@ -6,7 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Task } from '../../models/task.model';
+import { Label } from '../../models/label.model';
+import { LabelPickerComponent } from '../label-picker/label-picker.component';
 
 export interface TaskDialogData {
   task: Partial<Task>;
@@ -15,7 +18,16 @@ export interface TaskDialogData {
 
 @Component({
   selector: 'app-task-dialog',
-  imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDatepickerModule],
+  imports: [
+    FormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatTooltipModule,
+    LabelPickerComponent,
+  ],
   templateUrl: './task-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./task-dialog.component.scss'],
@@ -25,6 +37,10 @@ export class TaskDialogComponent {
     public dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaskDialogData,
   ) {}
+
+  onLabelsChanged(labels: Label[]): void {
+    this.data.task.labels = labels;
+  }
 
   get dueDateValue(): Date | null {
     return this.data.task.dueDate ? this.parseIsoDate(this.data.task.dueDate) : null;

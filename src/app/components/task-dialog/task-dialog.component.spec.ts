@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskDialogComponent, TaskDialogData } from './task-dialog.component';
 import { TaskStatus } from '../../models/task.model';
 
@@ -17,6 +19,8 @@ describe('TaskDialogComponent', () => {
       imports: [TaskDialogComponent],
       providers: [
         provideNativeDateAdapter(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: MAT_DIALOG_DATA, useValue: data },
       ],
@@ -46,6 +50,7 @@ describe('TaskDialogComponent', () => {
         status: TaskStatus.A_FAZER,
         taskOrder: 0,
         dueDate: null,
+        labels: [],
       },
       enableDelete: true,
     });

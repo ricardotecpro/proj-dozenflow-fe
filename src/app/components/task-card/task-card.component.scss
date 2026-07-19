@@ -30,6 +30,21 @@
   }
 }
 
+// Barras coloridas das labels, acima do título — sem texto, igual ao
+// estilo compacto do Trello (o nome aparece só no tooltip).
+.task-card-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 12px 0;
+}
+
+.label-bar {
+  width: 32px;
+  height: 8px;
+  border-radius: 3px;
+}
+
 .task-card-body {
   display: flex;
   align-items: flex-start;
