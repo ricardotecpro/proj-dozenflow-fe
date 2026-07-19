@@ -19,12 +19,32 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   `ConfirmationDialogComponent`, `KanbanBoardComponent`).
 - Pipeline de CI no GitHub Actions (`.github/workflows/frontend-ci.yml`).
 - `.nvmrc` fixando a versão do Node usada pelo projeto.
+- Responsividade mobile/tablet: board com scroll horizontal e scroll-snap
+  abaixo de 768px, diálogos full-screen em telas pequenas
+  (`BreakpointObserver`).
+- `NotificationService` (snackbar) para feedback de sucesso/erro em
+  criar/editar/excluir tarefas e ao carregar o board; mensagem amigável
+  específica para timeout/504 (cold start do backend no Render).
+- Indicador de carregamento inicial (`MatProgressSpinnerModule`) enquanto o
+  board busca as tarefas.
+- Indicador de cor por status no card da tarefa, botão "Adicionar tarefa"
+  nos estados vazios de "A Fazer"/"Em Andamento", micro-animação de entrada
+  para cards novos.
+- `aria-label` nos botões de ícone (adicionar tarefa por coluna, menu de
+  ações do card).
 
 ### Changed
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
   22.0.7 (upgrade incremental major a major, com as migrações automáticas
   do próprio `ng update`), corrigindo vulnerabilidades XSS conhecidas do
   Angular <=19.2 (ver `npm audit`).
+- Migração do theming do Angular Material de M2 (`mat.m2-define-*-theme`,
+  obsoleto desde a v17) para Material 3 (`mat.theme()`); CSS de estilos
+  globais caiu de ~158 KB para ~24 KB. Paleta azul/violeta mantém a
+  identidade visual anterior; dark mode continua via classe `.dark-theme`.
+- `loadTasks()` no `KanbanBoardComponent` agora trata erro (antes não tinha
+  handler nenhum); erros de criar/editar/excluir, que antes só iam para
+  `console.error`, agora também notificam o usuário via snackbar.
 
 ### Known issues
 - `npm audit` ainda aponta vulnerabilidades em dependências de
