@@ -68,6 +68,11 @@ body {
   // fundo customizada para o board; sem escolha, cai no fundo do tema.
   background-color: var(--board-background, var(--background-primary));
   color: var(--text-primary);
+  // mat.theme() só define o token de fonte para os componentes Material
+  // consumirem internamente — nunca aplica em elementos genéricos (p, h2,
+  // span). Sem isso, texto fora de componentes Material cai no serif
+  // padrão do navegador, apesar da fonte estar carregada.
+  font-family: var(--mat-sys-body-medium-font, $dozenflow-typography);
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
