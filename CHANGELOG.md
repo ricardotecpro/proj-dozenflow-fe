@@ -66,6 +66,14 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ### Fixed
 - `.gitignore` agora ignora artefatos `*.sync-conflict-*` para evitar que
   arquivos assim voltem a ser commitados por acidente.
+- Dark mode não aplicava no build de produção: a extração de CSS crítico do
+  Angular (`optimization.styles.inlineCritical`, ligada por padrão) duplicava
+  o bloco `:root` de `mat.theme()` inline no `index.html`, e essa cópia
+  vencia a classe `.dark-theme` no `<body>`. Corrigido desligando
+  `inlineCritical` na configuração de produção do `angular.json`.
+  Encontrado testando visualmente o deploy preview do PR no Chrome.
+- Botão "Adicionar tarefa" do estado vazio quebrava o texto em duas linhas;
+  `white-space: nowrap` no botão.
 
 ## [0.1.0] - 2025-09-XX
 

@@ -138,4 +138,8 @@ body.dark-theme .task-list.cdk-drop-list-receiving {
     width: 48px;
     height: 48px;
   }
+
+  button {
+    white-space: nowrap;
+  }
 }
