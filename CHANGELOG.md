@@ -61,6 +61,16 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
     estado vazio da lista perdeu o ícone grande/caixa tracejada/botão —
     lista vazia agora é só espaço em branco, como no Trello (o "+
     Adicionar cartão" já cobre a ação).
+  - Auditoria profunda de cards (populando o board com dados reais e
+    comparando com screenshots do Trello lado a lado): removida a
+    descrição inteira do card (agora só um ícone "tem descrição", igual
+    ao Trello — antes o texto completo deixava os cards grandes e
+    "pesados"); removida a borda lateral colorida por status (redundante
+    com a própria coluna, sem equivalente real no Trello); padding bem
+    mais compacto; menu de ações (⋮) só aparece no hover/foco em vez de
+    sempre visível; sombra sutil em repouso, não só no hover; colunas com
+    largura fixa de 272px (igual ao Trello) em vez de esticar pra
+    preencher o espaço.
 
 ### Changed
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
@@ -103,6 +113,15 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   Encontrado testando visualmente o deploy preview do PR no Chrome.
 - Botão "Adicionar tarefa" do estado vazio quebrava o texto em duas linhas;
   `white-space: nowrap` no botão.
+- **Bug crítico de tipografia**: o `font-family` do Roboto nunca era
+  aplicado a elementos genéricos (títulos, parágrafos) fora de componentes
+  Material — `mat.theme()` só define o token `--mat-sys-body-medium-font`
+  para os próprios componentes Material consumirem, sem nunca aplicar em
+  `body`/`h2`/`p`. O texto renderizava no serif padrão do navegador desde
+  a migração para M3, mascarado pela tela vazia (só ficou visível ao
+  popular o board com tarefas reais pela primeira vez, via seed local,
+  pra auditar os cards). Corrigido aplicando o token diretamente no
+  `body`.
 
 ## [0.1.0] - 2025-09-XX
 
