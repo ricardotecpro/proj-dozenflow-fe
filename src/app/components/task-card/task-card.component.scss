@@ -121,3 +121,27 @@
     color: #ffffff;
   }
 }
+
+// Badge de progresso do checklist — fica verde quando 100% concluído.
+.checklist-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px 1px 4px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.6;
+  background-color: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.checklist-complete {
+    background-color: #61bd4f;
+    color: #ffffff;
+  }
+}

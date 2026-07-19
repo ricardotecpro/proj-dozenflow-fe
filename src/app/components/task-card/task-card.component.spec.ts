@@ -15,6 +15,8 @@ describe('TaskCardComponent', () => {
     taskOrder: 0,
     dueDate: null,
     labels: [],
+    checklistTotal: 0,
+    checklistDone: 0,
   };
 
   function isoDateOffsetBy(days: number): string {
@@ -120,6 +122,30 @@ describe('TaskCardComponent', () => {
     const bars = fixture.debugElement.queryAll(By.css('.label-bar'));
     expect(bars.length).toBe(2);
     expect((bars[0].nativeElement as HTMLElement).style.backgroundColor).toBe('rgb(97, 189, 79)');
+  });
+
+  it('does not show a checklist badge when checklistTotal is 0', () => {
+    component.task = { ...task, description: '', checklistTotal: 0, checklistDone: 0 };
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css('.checklist-badge'))).toBeNull();
+  });
+
+  it('shows the checklist progress, not colored green when incomplete', () => {
+    component.task = { ...task, description: '', checklistTotal: 3, checklistDone: 1 };
+    fixture.detectChanges();
+
+    const badge = fixture.debugElement.query(By.css('.checklist-badge'));
+    expect(badge.nativeElement.textContent).toContain('1/3');
+    expect(badge.classes['checklist-complete']).toBeFalsy();
+  });
+
+  it('colors the checklist badge green when all items are done', () => {
+    component.task = { ...task, description: '', checklistTotal: 3, checklistDone: 3 };
+    fixture.detectChanges();
+
+    const badge = fixture.debugElement.query(By.css('.checklist-badge'));
+    expect(badge.classes['checklist-complete']).toBeTrue();
   });
 
   it('emits edit when edit() is triggered', () => {

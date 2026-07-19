@@ -1,0 +1,30 @@
+@if (items.length) {
+  <p class="checklist-progress">{{ doneCount }}/{{ items.length }} concluídos</p>
+}
+
+<ul class="checklist-items">
+  @for (item of items; track item.id) {
+    <li>
+      <mat-checkbox [checked]="item.done" (change)="toggle(item)">{{ item.title }}</mat-checkbox>
+      <button
+        mat-icon-button
+        (click)="removeItem(item)"
+        [attr.aria-label]="'Remover ' + item.title"
+        class="remove-item-button"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  }
+</ul>
+
+<div class="add-item">
+  <input
+    type="text"
+    placeholder="Adicionar item"
+    [(ngModel)]="newItemTitle"
+    (keydown.enter)="addItem()"
+    aria-label="Título do novo item do checklist"
+  />
+  <button mat-button (click)="addItem()">Adicionar</button>
+</div>

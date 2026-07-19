@@ -16,6 +16,8 @@ describe('TaskService', () => {
     taskOrder: 0,
     dueDate: null,
     labels: [],
+    checklistTotal: 0,
+    checklistDone: 0,
   };
 
   beforeEach(() => {

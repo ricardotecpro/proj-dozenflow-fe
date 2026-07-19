@@ -1,4 +1,5 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -7,9 +8,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 import { Task } from '../../models/task.model';
 import { Label } from '../../models/label.model';
 import { LabelPickerComponent } from '../label-picker/label-picker.component';
+import { ChecklistEditorComponent } from '../checklist-editor/checklist-editor.component';
 
 export interface TaskDialogData {
   task: Partial<Task>;
@@ -20,13 +23,16 @@ export interface TaskDialogData {
   selector: 'app-task-dialog',
   imports: [
     FormsModule,
+    NgTemplateOutlet,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatDatepickerModule,
     MatTooltipModule,
+    MatTabsModule,
     LabelPickerComponent,
+    ChecklistEditorComponent,
   ],
   templateUrl: './task-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -8,6 +8,12 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Checklist nas tarefas: editor de checklist (`app-checklist-editor`, novo)
+  com checkbox por item, adicionar/remover, e um contador "X/Y concluídos";
+  badge "☑ 2/5" no card (fica verde quando 100% concluído). O diálogo de
+  edição de tarefa passou a usar `MatTabsModule` (abas "Detalhes" e
+  "Checklist") só quando a tarefa já existe — criar uma tarefa nova
+  continua sendo o formulário simples de antes, sem abas.
 - Labels coloridas nas tarefas: barras coloridas acima do título do card
   (sem texto, estilo Trello compacto — o nome aparece só no tooltip),
   seletor de labels (`app-label-picker`, novo) no diálogo de edição com um

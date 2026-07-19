@@ -25,6 +25,8 @@ describe('LabelPickerComponent', () => {
     taskOrder: 0,
     dueDate: null,
     labels: [red],
+    checklistTotal: 0,
+    checklistDone: 0,
   };
 
   function setup(selectedLabels: Label[] = []) {

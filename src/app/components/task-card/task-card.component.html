@@ -17,12 +17,22 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>
-  @if (task.description || dueDateStatus) {
+  @if (task.description || dueDateStatus || task.checklistTotal) {
     <div class="task-card-footer">
       @if (dueDateStatus) {
         <span class="due-date-pill" [class]="dueDateStatus" matTooltip="Data de vencimento">
           <mat-icon>schedule</mat-icon>
           {{ dueDateLabel }}
+        </span>
+      }
+      @if (task.checklistTotal) {
+        <span
+          class="checklist-badge"
+          [class.checklist-complete]="task.checklistDone === task.checklistTotal"
+          matTooltip="Checklist"
+        >
+          <mat-icon>checklist</mat-icon>
+          {{ task.checklistDone }}/{{ task.checklistTotal }}
         </span>
       }
       @if (task.description) {

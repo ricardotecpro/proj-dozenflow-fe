@@ -15,4 +15,6 @@ export interface Task {
   /** ISO date string (yyyy-MM-dd), or null when no due date is set. */
   dueDate: string | null;
   labels: Label[];
+  checklistTotal: number;
+  checklistDone: number;
 }
