@@ -1,4 +1,4 @@
-// Importa a biblioteca de temas do Angular Material (MDC-based).
+// Importa a biblioteca de temas do Angular Material 3 (system-level tokens).
 @use '@angular/material' as mat;
 
 // Inclui o core do Material (reset, ripple, etc.) uma única vez.
@@ -6,86 +6,59 @@
 @include mat.app-background();
 
 // =======================
-// Definição da Tipografia
+// Tipografia e paleta compartilhadas pelos dois temas
 // =======================
-$custom-typography: mat.m2-define-typography-config(
-  $font-family: '"Inter", "Roboto", "Helvetica Neue", Arial, sans-serif',
-);
-
-// =======================
-// Definição das Paletas
-// =======================
-$dozenflow-primary: mat.m2-define-palette(mat.$m2-blue-palette, 500);
-$dozenflow-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
-$dozenflow-warn: mat.m2-define-palette(mat.$m2-red-palette);
-
-// =======================
-// Tema CLARO
-// =======================
-$dozenflow-light-theme: mat.m2-define-light-theme(
-  (
-    color: (
-      primary: $dozenflow-primary,
-      accent: $dozenflow-accent,
-      warn: $dozenflow-warn,
-    ),
-    typography: $custom-typography,
-  )
-);
-
-// =======================
-// Tema ESCURO
-// =======================
-$dozenflow-dark-theme: mat.m2-define-dark-theme(
-  (
-    color: (
-      primary: $dozenflow-primary,
-      accent: $dozenflow-accent,
-      warn: $dozenflow-warn,
-    ),
-    typography: $custom-typography,
-  )
-);
-
-// =======================
-// Aplicação dos Temas
-// =======================
-
-// Aplica a tipografia e densidade uma única vez para toda a aplicação.
-@include mat.all-component-typographies($dozenflow-light-theme);
-@include mat.all-component-densities($dozenflow-light-theme);
+$dozenflow-typography: '"Inter", "Roboto", "Helvetica Neue", Arial, sans-serif';
+$dozenflow-primary: mat.$azure-palette;
+$dozenflow-tertiary: mat.$violet-palette;
 
 // Tema padrão (claro)
 :root {
-  // Aplica apenas as cores do tema claro para os componentes do Material.
-  @include mat.all-component-colors($dozenflow-light-theme);
+  @include mat.theme(
+    (
+      color: (
+        primary: $dozenflow-primary,
+        tertiary: $dozenflow-tertiary,
+        theme-type: light,
+      ),
+      typography: $dozenflow-typography,
+      density: 0,
+    )
+  );
+  color-scheme: light;
 
-  // Define custom CSS variables for the light theme.
-  --background-primary: #f4f7f9;
-  --background-secondary: #ebecf0;
-  --background-card: #ffffff;
-  --text-primary: #172b4d;
-  --text-secondary: #5e6c84;
-  --border-color: #dfe1e6;
-  --shadow-color: rgba(9, 30, 66, 0.25);
-  --accent-color: #007bff;
+  // Aliases semânticos usados pelos componentes do projeto, resolvidos a
+  // partir dos tokens de sistema do Material 3 (--mat-sys-*).
+  --background-primary: var(--mat-sys-surface);
+  --background-secondary: var(--mat-sys-surface-container);
+  --background-card: var(--mat-sys-surface-container-low);
+  --text-primary: var(--mat-sys-on-surface);
+  --text-secondary: var(--mat-sys-on-surface-variant);
+  --border-color: var(--mat-sys-outline-variant);
 }
 
 // Tema alternativo (escuro)
 // Para ativar: adicionar a classe "dark-theme" no <body>
 .dark-theme {
-  // Aplica apenas as cores do tema escuro para os componentes do Material.
-  @include mat.all-component-colors($dozenflow-dark-theme);
+  @include mat.theme(
+    (
+      color: (
+        primary: $dozenflow-primary,
+        tertiary: $dozenflow-tertiary,
+        theme-type: dark,
+      ),
+      typography: $dozenflow-typography,
+      density: 0,
+    )
+  );
+  color-scheme: dark;
 
-  // Define custom CSS variables for the dark theme.
-  --background-primary: #1d2125;
-  --background-secondary: #282c34;
-  --background-card: #212529;
-  --text-primary: #abb2bf;
-  --text-secondary: #828997;
-  --border-color: #3b4048;
-  --shadow-color: rgba(0, 0, 0, 0.4);
-  --accent-color: #61afef;
+  --background-primary: var(--mat-sys-surface);
+  --background-secondary: var(--mat-sys-surface-container);
+  --background-card: var(--mat-sys-surface-container-low);
+  --text-primary: var(--mat-sys-on-surface);
+  --text-secondary: var(--mat-sys-on-surface-variant);
+  --border-color: var(--mat-sys-outline-variant);
 }
 
 /* Global styles */
@@ -95,4 +68,25 @@ body {
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
+}
+
+// Diálogos full-screen em telas pequenas (ver KanbanBoardComponent.dialogConfig()).
+.full-screen-dialog .mat-mdc-dialog-surface {
+  border-radius: 0;
+  height: 100%;
+  max-height: 100vh;
+}
+
+// Snackbars de feedback (ver NotificationService). M3 não tem um papel de
+// cor "success" dedicado, então reaproveitamos tertiary/error do tema.
+.notification-success {
+  --mat-snack-bar-container-color: var(--mat-sys-tertiary-container);
+  --mat-snack-bar-supporting-text-color: var(--mat-sys-on-tertiary-container);
+  --mat-snack-bar-button-color: var(--mat-sys-on-tertiary-container);
+}
+
+.notification-error {
+  --mat-snack-bar-container-color: var(--mat-sys-error-container);
+  --mat-snack-bar-supporting-text-color: var(--mat-sys-on-error-container);
+  --mat-snack-bar-button-color: var(--mat-sys-on-error-container);
 }
