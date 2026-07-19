@@ -164,4 +164,51 @@ describe('KanbanBoardComponent', () => {
 
     expect(notificationServiceSpy.error).toHaveBeenCalledWith('Não foi possível atualizar a tarefa.');
   });
+
+  it('openQuickAdd() opens the field and cancelQuickAdd() resets it', () => {
+    fixture.detectChanges();
+
+    component.openQuickAdd('todo');
+    expect(component.quickAdd.todo.open).toBeTrue();
+
+    component.quickAdd.todo.title = 'Rascunho';
+    component.cancelQuickAdd('todo');
+
+    expect(component.quickAdd.todo.open).toBeFalse();
+    expect(component.quickAdd.todo.title).toBe('');
+  });
+
+  it('submitQuickAdd() does nothing for a blank title', () => {
+    fixture.detectChanges();
+    component.quickAdd.todo.title = '   ';
+
+    component.submitQuickAdd('todo', component.todoTasks, TaskStatus.A_FAZER);
+
+    expect(taskServiceSpy.createTask).not.toHaveBeenCalled();
+  });
+
+  it('submitQuickAdd() creates the task, notifies success and clears the title but keeps the field open', () => {
+    fixture.detectChanges();
+    component.quickAdd.todo.open = true;
+    component.quickAdd.todo.title = 'Cartão rápido';
+
+    component.submitQuickAdd('todo', component.todoTasks, TaskStatus.A_FAZER);
+
+    expect(taskServiceSpy.createTask).toHaveBeenCalledWith(
+      jasmine.objectContaining({ title: 'Cartão rápido', status: TaskStatus.A_FAZER }),
+    );
+    expect(notificationServiceSpy.success).toHaveBeenCalledWith('Tarefa criada.');
+    expect(component.quickAdd.todo.title).toBe('');
+    expect(component.quickAdd.todo.open).toBeTrue();
+  });
+
+  it('submitQuickAdd() notifies an error when creation fails', () => {
+    fixture.detectChanges();
+    component.quickAdd.inProgress.title = 'Cartão rápido';
+    taskServiceSpy.createTask.and.returnValue(throwError(() => new Error('boom')));
+
+    component.submitQuickAdd('inProgress', component.inProgressTasks, TaskStatus.EM_ANDAMENTO);
+
+    expect(notificationServiceSpy.error).toHaveBeenCalledWith('Não foi possível criar a tarefa.');
+  });
 });
