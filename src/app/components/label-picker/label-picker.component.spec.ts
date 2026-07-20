@@ -5,7 +5,7 @@ import { LabelService } from '../../services/label.service';
 import { TaskService } from '../../services/task.service';
 import { NotificationService } from '../../services/notification.service';
 import { Label } from '../../models/label.model';
-import { Task, TaskStatus } from '../../models/task.model';
+import { Task } from '../../models/task.model';
 
 describe('LabelPickerComponent', () => {
   let fixture: ComponentFixture<LabelPickerComponent>;
@@ -21,9 +21,11 @@ describe('LabelPickerComponent', () => {
     id: 5,
     title: 'Task',
     description: '',
-    status: TaskStatus.A_FAZER,
+    listId: 1,
     taskOrder: 0,
+    archived: false,
     dueDate: null,
+    coverColor: null,
     labels: [red],
     checklistTotal: 0,
     checklistDone: 0,

@@ -1,4 +1,7 @@
 <mat-card class="task-card">
+  @if (task.coverColor) {
+    <div class="task-card-cover" [style.background-color]="task.coverColor"></div>
+  }
   @if (task.labels.length) {
     <div class="task-card-labels">
       @for (label of task.labels; track label.id) {
@@ -57,9 +60,9 @@
       <mat-icon>edit</mat-icon>
       <span>Editar</span>
     </button>
-    <button mat-menu-item (click)="delete.emit()">
-      <mat-icon>delete</mat-icon>
-      <span>Excluir</span>
+    <button mat-menu-item (click)="archive.emit()">
+      <mat-icon>archive</mat-icon>
+      <span>Arquivar</span>
     </button>
   </mat-menu>
 </mat-card>

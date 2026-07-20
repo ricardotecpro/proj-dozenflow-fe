@@ -12,14 +12,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, forkJoin, take } from 'rxjs';
-import { Task, TaskStatus } from '../../models/task.model';
+import { Task } from '../../models/task.model';
+import { TaskList } from '../../models/list.model';
 import { TaskService } from '../../services/task.service';
+import { ListService } from '../../services/list.service';
 import { NotificationService } from '../../services/notification.service';
 import { TaskDialogComponent, TaskDialogData } from '../task-dialog/task-dialog.component';
 import { TaskCardComponent } from '../task-card/task-card.component';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-
-type QuickAddKey = 'todo' | 'inProgress';
+import { ArchivePanelComponent } from '../archive-panel/archive-panel.component';
 
 @Component({
   selector: 'app-kanban-board',
@@ -39,22 +40,23 @@ type QuickAddKey = 'todo' | 'inProgress';
   styleUrls: ['./kanban-board.component.scss'],
 })
 export class KanbanBoardComponent implements OnInit {
-  todoTasks: Task[] = [];
-  inProgressTasks: Task[] = [];
-  doneTasks: Task[] = [];
+  lists: TaskList[] = [];
+  tasksByListId: Record<number, Task[]> = {};
   loading = true;
-  public TaskStatus = TaskStatus; // Torna o enum acessível para o template
 
-  // Adição rápida de cartão (só título, estilo Trello) nas colunas
-  // "A Fazer"/"Em Andamento" — "Concluída" mantém a decisão de não permitir
-  // criar direto ali.
-  quickAdd: Record<QuickAddKey, { open: boolean; title: string }> = {
-    todo: { open: false, title: '' },
-    inProgress: { open: false, title: '' },
-  };
+  // Adição rápida de cartão (só título, estilo Trello), disponível em toda lista.
+  quickAdd: Record<number, { open: boolean; title: string }> = {};
+
+  // Afordância "+ Adicionar outra lista" no fim do board, estilo Trello.
+  newList: { open: boolean; title: string } = { open: false, title: '' };
+
+  // Edição inline do título da lista (clicar no título vira um input).
+  editingListId: number | null = null;
+  editingListName = '';
 
   constructor(
     private taskService: TaskService,
+    private listService: ListService,
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
     private notificationService: NotificationService,
@@ -77,24 +79,34 @@ export class KanbanBoardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTasks();
+    this.loadBoard();
   }
 
-  loadTasks(): void {
+  /** Ids de todas as colunas de cartões, no formato usado pelos cdkDropList — conecta as listas entre si para drag-and-drop de cartões. */
+  get taskListIds(): string[] {
+    return this.lists.map((list) => 'taskList-' + list.id);
+  }
+
+  loadBoard(): void {
     this.loading = true;
-    this.taskService.getTasks().subscribe({
-      next: (tasks) => {
-        // Garante que a ordem seja consistente com o backend
+    forkJoin([this.listService.getLists(), this.taskService.getTasks()]).subscribe({
+      next: ([lists, tasks]) => {
+        this.lists = [...lists].sort((a, b) => a.position - b.position);
         const sortedTasks = tasks.sort((a, b) => a.taskOrder - b.taskOrder);
 
-        this.todoTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.A_FAZER);
-        this.inProgressTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.EM_ANDAMENTO);
-        this.doneTasks = sortedTasks.filter((t: Task) => t.status === TaskStatus.CONCLUIDA);
+        this.tasksByListId = {};
+        const quickAdd: Record<number, { open: boolean; title: string }> = {};
+        for (const list of this.lists) {
+          this.tasksByListId[list.id] = sortedTasks.filter((t: Task) => t.listId === list.id);
+          quickAdd[list.id] = this.quickAdd[list.id] ?? { open: false, title: '' };
+        }
+        this.quickAdd = quickAdd;
+
         this.loading = false;
       },
       error: (err: unknown) => {
         this.loading = false;
-        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível carregar as tarefas.'));
+        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível carregar o board.'));
       },
     });
   }
@@ -108,23 +120,23 @@ export class KanbanBoardComponent implements OnInit {
       // Se foi movido para um container diferente, transfere o item.
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
 
-      // Atualiza a ordem e o status de ambas as listas.
-      const newStatus = this.getStatusFromContainerId(event.container.id);
-      if (!newStatus) return; // Guarda de segurança, não deve acontecer com IDs corretos.
+      // Atualiza a ordem e a lista de ambos os containers.
+      const newListId = this.getListIdFromContainerId(event.container.id);
+      if (newListId === null) return; // Guarda de segurança, não deve acontecer com IDs corretos.
 
-      this.updateListOrder(event.container.data, newStatus);
+      this.updateListOrder(event.container.data, newListId);
       this.updateListOrder(event.previousContainer.data);
     }
   }
 
-  private updateListOrder(tasks: Task[], status?: TaskStatus): void {
+  private updateListOrder(tasks: Task[], listId?: number): void {
     const updates: Observable<Task>[] = tasks.map((task, index) => {
       const updatedTask: Partial<Task> = {
         ...task,
         taskOrder: index,
       };
-      if (status) {
-        updatedTask.status = status;
+      if (listId !== undefined) {
+        updatedTask.listId = listId;
       }
       return this.taskService.updateTask(task.id, updatedTask);
     });
@@ -137,27 +149,22 @@ export class KanbanBoardComponent implements OnInit {
             this.notificationService.error(
               this.friendlyErrorMessage(err, 'Não foi possível mover a tarefa. Desfazendo a alteração.'),
             );
-            // Rollback simples: recarrega as tarefas do servidor para garantir consistência.
-            this.loadTasks();
+            // Rollback simples: recarrega o board do servidor para garantir consistência.
+            this.loadBoard();
           },
         });
     }
   }
 
-  private getStatusFromContainerId(containerId: string): TaskStatus | null {
-    switch (containerId) {
-      case 'todoList':
-        return TaskStatus.A_FAZER;
-      case 'inProgressList':
-        return TaskStatus.EM_ANDAMENTO;
-      case 'doneList':
-        return TaskStatus.CONCLUIDA;
-      default:
-        return null;
+  private getListIdFromContainerId(containerId: string): number | null {
+    if (!containerId.startsWith('taskList-')) {
+      return null;
     }
+    const id = Number(containerId.slice('taskList-'.length));
+    return Number.isNaN(id) ? null : id;
   }
 
-  openTaskDialog(task?: Task, taskList?: Task[], status?: TaskStatus): void {
+  openTaskDialog(task?: Task, taskList?: Task[], listId?: number): void {
     const isNew = !task;
     const dialogData: TaskDialogData = {
       // Se for uma nova tarefa, cria um objeto vazio. Se for edição, cria uma cópia para não modificar o objeto original antes de salvar.
@@ -176,7 +183,7 @@ export class KanbanBoardComponent implements OnInit {
         // fora do fluxo de salvar/cancelar — mesmo em "Cancelar", recarrega
         // pra refletir qualquer mudança desse tipo que já foi persistida.
         if (!isNew) {
-          this.loadTasks();
+          this.loadBoard();
         }
         return;
       }
@@ -185,23 +192,23 @@ export class KanbanBoardComponent implements OnInit {
         // Atualiza uma tarefa existente
         this.taskService.updateTask(result.id, result).subscribe({
           next: () => {
-            this.loadTasks();
+            this.loadBoard();
             this.notificationService.success('Tarefa atualizada.');
           },
           error: (err: unknown) =>
             this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível atualizar a tarefa.')),
         });
       } else {
-        // Cria uma nova tarefa, garantindo que tenha status e ordem
-        if (status && taskList) {
+        // Cria uma nova tarefa, garantindo que tenha lista e ordem
+        if (listId !== undefined && taskList) {
           const newTask: Partial<Task> = {
             ...result,
-            status: status,
+            listId,
             taskOrder: taskList.length, // Adiciona a nova tarefa no final da lista
           };
           this.taskService.createTask(newTask).subscribe({
             next: () => {
-              this.loadTasks();
+              this.loadBoard();
               this.notificationService.success('Tarefa criada.');
             },
             error: (err: unknown) =>
@@ -212,53 +219,193 @@ export class KanbanBoardComponent implements OnInit {
     });
   }
 
-  openQuickAdd(key: QuickAddKey): void {
-    this.quickAdd[key].open = true;
+  openQuickAdd(listId: number): void {
+    this.quickAdd[listId].open = true;
   }
 
-  cancelQuickAdd(key: QuickAddKey): void {
-    this.quickAdd[key] = { open: false, title: '' };
+  cancelQuickAdd(listId: number): void {
+    this.quickAdd[listId] = { open: false, title: '' };
   }
 
-  submitQuickAdd(key: QuickAddKey, taskList: Task[], status: TaskStatus): void {
-    const title = this.quickAdd[key].title.trim();
+  submitQuickAdd(listId: number, taskList: Task[]): void {
+    const title = this.quickAdd[listId].title.trim();
     if (!title) {
       return;
     }
 
-    const newTask: Partial<Task> = { title, description: '', status, taskOrder: taskList.length };
+    const newTask: Partial<Task> = { title, description: '', listId, taskOrder: taskList.length };
     this.taskService.createTask(newTask).subscribe({
       next: () => {
-        this.loadTasks();
+        this.loadBoard();
         this.notificationService.success('Tarefa criada.');
         // Mantém o campo aberto e limpo para adicionar o próximo cartão rapidamente.
-        this.quickAdd[key].title = '';
+        this.quickAdd[listId].title = '';
       },
       error: (err: unknown) =>
         this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível criar a tarefa.')),
     });
   }
 
-  deleteTask(task: Task): void {
+  /** Menu "..." da lista (estilo Trello): ordenar cartões da coluna in-place. */
+  sortList(taskList: Task[], listId: number, by: 'title' | 'dueDate'): void {
+    const sorted = [...taskList].sort((a, b) => {
+      if (by === 'title') {
+        return a.title.localeCompare(b.title, 'pt-BR');
+      }
+      // Sem data de vencimento vai para o final.
+      if (!a.dueDate) return !b.dueDate ? 0 : 1;
+      if (!b.dueDate) return -1;
+      return a.dueDate.localeCompare(b.dueDate);
+    });
+    taskList.splice(0, taskList.length, ...sorted);
+    this.updateListOrder(taskList, listId);
+  }
+
+  archiveTask(task: Task): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       ...this.dialogConfig('360px'),
       data: {
-        title: 'Confirmar Exclusão',
-        message: `Tem certeza que deseja excluir a tarefa "${task.title}"?`,
+        title: 'Arquivar cartão',
+        message: `Tem certeza que deseja arquivar o cartão "${task.title}"?`,
       },
     });
 
     dialogRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        this.taskService.deleteTask(task.id).subscribe({
-          next: () => {
-            this.loadTasks();
-            this.notificationService.success('Tarefa excluída.');
-          },
-          error: (err: unknown) =>
-            this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível excluir a tarefa.')),
-        });
+      if (!confirmed) {
+        return;
       }
+      this.taskService.archiveTask(task.id).subscribe({
+        next: () => {
+          const taskList = this.tasksByListId[task.listId];
+          if (taskList) {
+            const index = taskList.findIndex((t) => t.id === task.id);
+            if (index !== -1) {
+              taskList.splice(index, 1);
+            }
+          }
+          this.notificationService.success('Cartão arquivado.');
+        },
+        error: (err: unknown) =>
+          this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível arquivar o cartão.')),
+      });
+    });
+  }
+
+  addList(): void {
+    this.newList.open = true;
+  }
+
+  cancelAddList(): void {
+    this.newList = { open: false, title: '' };
+  }
+
+  submitAddList(): void {
+    const name = this.newList.title.trim();
+    if (!name) {
+      return;
+    }
+
+    this.listService.createList({ name, position: this.lists.length }).subscribe({
+      next: (list) => {
+        this.lists.push(list);
+        this.tasksByListId[list.id] = [];
+        this.quickAdd[list.id] = { open: false, title: '' };
+        this.newList = { open: false, title: '' };
+        this.notificationService.success('Lista criada.');
+      },
+      error: (err: unknown) =>
+        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível criar a lista.')),
+    });
+  }
+
+  startRenameList(list: TaskList): void {
+    this.editingListId = list.id;
+    this.editingListName = list.name;
+  }
+
+  cancelRenameList(): void {
+    this.editingListId = null;
+    this.editingListName = '';
+  }
+
+  commitRenameList(list: TaskList): void {
+    const name = this.editingListName.trim();
+    this.editingListId = null;
+    if (!name || name === list.name) {
+      return;
+    }
+
+    this.listService.updateList(list.id, { name, position: list.position }).subscribe({
+      next: (updated) => {
+        list.name = updated.name;
+        this.notificationService.success('Lista renomeada.');
+      },
+      error: (err: unknown) => {
+        this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível renomear a lista.'));
+      },
+    });
+  }
+
+  archiveList(list: TaskList): void {
+    if (this.lists.length <= 1) {
+      return;
+    }
+
+    const cardCount = (this.tasksByListId[list.id] ?? []).length;
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      ...this.dialogConfig('360px'),
+      data: {
+        title: 'Arquivar lista',
+        message: `Tem certeza que deseja arquivar a lista "${list.name}"? ${cardCount} cartão(ões) desta lista também serão arquivados.`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.listService.archiveList(list.id).subscribe({
+        next: () => {
+          this.lists = this.lists.filter((l) => l.id !== list.id);
+          delete this.tasksByListId[list.id];
+          delete this.quickAdd[list.id];
+          this.notificationService.success('Lista arquivada.');
+        },
+        error: (err: unknown) =>
+          this.notificationService.error(this.friendlyErrorMessage(err, 'Não foi possível arquivar a lista.')),
+      });
+    });
+  }
+
+  dropList(event: CdkDragDrop<TaskList[]>): void {
+    moveItemInArray(this.lists, event.previousIndex, event.currentIndex);
+    this.updateListPositions(this.lists);
+  }
+
+  private updateListPositions(lists: TaskList[]): void {
+    const updates = lists.map((list, index) =>
+      this.listService.updateList(list.id, { name: list.name, position: index }),
+    );
+
+    if (updates.length > 0) {
+      forkJoin(updates)
+        .pipe(take(1))
+        .subscribe({
+          error: (err: unknown) => {
+            this.notificationService.error(
+              this.friendlyErrorMessage(err, 'Não foi possível mover a lista. Desfazendo a alteração.'),
+            );
+            this.loadBoard();
+          },
+        });
+    }
+  }
+
+  openArchivePanel(): void {
+    const dialogRef = this.dialog.open(ArchivePanelComponent, this.dialogConfig('600px'));
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadBoard();
     });
   }
 }

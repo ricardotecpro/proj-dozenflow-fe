@@ -5,7 +5,6 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskDialogComponent, TaskDialogData } from './task-dialog.component';
-import { TaskStatus } from '../../models/task.model';
 
 describe('TaskDialogComponent', () => {
   let fixture: ComponentFixture<TaskDialogComponent>;
@@ -33,7 +32,7 @@ describe('TaskDialogComponent', () => {
 
   it('shows "Nova Tarefa" for a task without id', () => {
     setup({
-      task: { title: '', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: null },
+      task: { title: '', description: '', listId: 1, taskOrder: 0, dueDate: null },
       enableDelete: false,
     });
 
@@ -47,7 +46,7 @@ describe('TaskDialogComponent', () => {
         id: 1,
         title: 'Existing',
         description: '',
-        status: TaskStatus.A_FAZER,
+        listId: 1,
         taskOrder: 0,
         dueDate: null,
         labels: [],
@@ -61,7 +60,7 @@ describe('TaskDialogComponent', () => {
 
   it('cancel() closes the dialog', () => {
     setup({
-      task: { title: '', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: null },
+      task: { title: '', description: '', listId: 1, taskOrder: 0, dueDate: null },
       enableDelete: false,
     });
 
@@ -72,7 +71,7 @@ describe('TaskDialogComponent', () => {
 
   it('dueDateValue getter parses the ISO date string without a timezone shift', () => {
     setup({
-      task: { title: '', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: '2026-08-01' },
+      task: { title: '', description: '', listId: 1, taskOrder: 0, dueDate: '2026-08-01' },
       enableDelete: false,
     });
 
@@ -85,7 +84,7 @@ describe('TaskDialogComponent', () => {
 
   it('dueDateValue setter writes back an ISO date string', () => {
     setup({
-      task: { title: '', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: null },
+      task: { title: '', description: '', listId: 1, taskOrder: 0, dueDate: null },
       enableDelete: false,
     });
 
@@ -96,7 +95,7 @@ describe('TaskDialogComponent', () => {
 
   it('dueDateValue setter writes null when cleared', () => {
     setup({
-      task: { title: '', description: '', status: TaskStatus.A_FAZER, taskOrder: 0, dueDate: '2026-08-01' },
+      task: { title: '', description: '', listId: 1, taskOrder: 0, dueDate: '2026-08-01' },
       enableDelete: false,
     });
 

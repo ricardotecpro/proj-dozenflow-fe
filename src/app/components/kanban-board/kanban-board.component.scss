@@ -1,3 +1,10 @@
+.board-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 1200px;
+  padding: 8px 24px 0;
+}
+
 .kanban-board {
   display: flex;
   gap: 20px;
@@ -31,6 +38,24 @@
   // Estilo Trello: lista opaca e "flat" (sem blur/transparência), pra
   // destacar bem contra o fundo colorido do board.
   background-color: var(--background-secondary);
+}
+
+// Coluna de destino "+ Adicionar outra lista" no fim do board — mesma
+// largura/formato das colunas normais, mas discreta (tracejada) até que o
+// usuário interaja com ela.
+.kanban-column--add {
+  background-color: transparent;
+  border: 1px dashed var(--border-color);
+
+  .quick-add-trigger:hover {
+    background-color: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  }
+}
+
+// Mantém a largura da coluna no placeholder enquanto ela é arrastada
+// (a regra genérica abaixo só cuida da opacidade).
+.kanban-column.cdk-drag-placeholder {
+  flex: 0 0 272px;
 }
 
 // Tablet e celular: colunas de largura fixa com scroll horizontal e
@@ -72,7 +97,30 @@
     letter-spacing: -0.005em;
     // Garante que o H2 herde a fonte 'Roboto' definida globalmente no tema.
     font-family: inherit;
+    cursor: text;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-left: -4px;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--text-primary) 6%, transparent);
+    }
   }
+}
+
+.list-title-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: 1px solid var(--mat-sys-primary);
+  border-radius: 4px;
+  background: var(--background-card);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding: 2px 4px;
+  margin-left: -4px;
 }
 
 // Badge com a contagem de tarefas da coluna (estilo Trello).

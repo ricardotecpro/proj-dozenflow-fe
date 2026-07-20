@@ -5,9 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Task, TaskStatus } from '../../models/task.model';
+import { Task } from '../../models/task.model';
 
-export type DueDateStatus = 'overdue' | 'due-soon' | 'done' | 'default';
+export type DueDateStatus = 'overdue' | 'due-soon' | 'default';
 
 const DUE_SOON_THRESHOLD_DAYS = 2;
 
@@ -21,14 +21,11 @@ const DUE_SOON_THRESHOLD_DAYS = 2;
 export class TaskCardComponent {
   @Input({ required: true }) task!: Task;
   @Output() edit = new EventEmitter<void>();
-  @Output() delete = new EventEmitter<void>();
+  @Output() archive = new EventEmitter<void>();
 
   get dueDateStatus(): DueDateStatus | null {
     if (!this.task.dueDate) {
       return null;
-    }
-    if (this.task.status === TaskStatus.CONCLUIDA) {
-      return 'done';
     }
 
     const today = new Date();

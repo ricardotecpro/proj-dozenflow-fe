@@ -17,6 +17,10 @@ export class TaskService {
     return this.http.get<Task[]>(this.apiUrl);
   }
 
+  getArchivedTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.apiUrl}/archived`);
+  }
+
   updateTask(id: number, task: Partial<Task>): Observable<Task> {
     return this.http.put<Task>(`${this.apiUrl}/${id}`, task);
   }
@@ -27,6 +31,14 @@ export class TaskService {
 
   deleteTask(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  archiveTask(id: number): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/${id}/archive`, {});
+  }
+
+  restoreTask(id: number): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/${id}/restore`, {});
   }
 
   attachLabel(taskId: number, labelId: number): Observable<Task> {

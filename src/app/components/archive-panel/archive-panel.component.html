@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Itens arquivados</h2>
+<mat-dialog-content class="archive-panel-content">
+  @if (loading) {
+    <div class="archive-loading">
+      <mat-spinner diameter="36"></mat-spinner>
+    </div>
+  } @else {
+    <section class="archive-section">
+      <h3>Listas arquivadas</h3>
+      @if (archivedLists.length === 0) {
+        <p class="archive-empty">Nenhuma lista arquivada.</p>
+      } @else {
+        @for (list of archivedLists; track list.id) {
+          <div class="archive-row">
+            <span class="archive-row-name">{{ list.name }}</span>
+            <div class="archive-row-actions">
+              <button mat-icon-button matTooltip="Restaurar lista" (click)="restoreList(list)">
+                <mat-icon>restore</mat-icon>
+              </button>
+              <button mat-icon-button matTooltip="Excluir permanentemente" (click)="deleteListForever(list)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="archive-section">
+      <h3>Cartões arquivados</h3>
+      @if (archivedTasks.length === 0) {
+        <p class="archive-empty">Nenhum cartão arquivado.</p>
+      } @else {
+        @for (task of archivedTasks; track task.id) {
+          <div class="archive-row">
+            <span class="archive-row-name">{{ task.title }}</span>
+            <div class="archive-row-actions">
+              <button mat-icon-button matTooltip="Restaurar cartão" (click)="restoreTask(task)">
+                <mat-icon>restore</mat-icon>
+              </button>
+              <button mat-icon-button matTooltip="Excluir permanentemente" (click)="deleteTaskForever(task)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </section>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fechar</button>
+</mat-dialog-actions>
