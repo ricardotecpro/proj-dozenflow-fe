@@ -1,27 +1,56 @@
-# DozenflowFe
+# DozenFlow — Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.4.
+Interface web do [DozenFlow](https://dozenflow.netlify.app), um quadro Kanban
+para gerenciamento de tarefas, com drag-and-drop entre colunas. Este
+repositório contém apenas o frontend; a API vive em
+[`proj-dozenflow-be`](https://github.com/ricardotecpro/proj-dozenflow-be).
 
-## Development server
+## Stack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Angular (standalone components)
+- Angular Material + Angular CDK (drag-and-drop)
+- TypeScript, SCSS
+- ESLint + Prettier + Husky/lint-staged
 
-## Code scaffolding
+## Pré-requisitos
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Node.js (versão fixada em [`.nvmrc`](.nvmrc) — use `nvm use` se disponível)
+- npm
 
-## Build
+## Como rodar (desenvolvimento)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm install
+npm start        # ng serve, http://localhost:4200
+```
 
-## Running unit tests
+Em desenvolvimento, chamadas para `/api/*` são redirecionadas para o backend
+local via `proxy.conf.json`. Rode o [backend](https://github.com/ricardotecpro/proj-dozenflow-be)
+em `http://localhost:8080` em paralelo.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Scripts
 
-## Running end-to-end tests
+| Comando | Descrição |
+|---|---|
+| `npm start` | servidor de desenvolvimento (`ng serve`) |
+| `npm run build` | build de desenvolvimento |
+| `npm run build:prod` | build de produção (`dist/dozenflow-fe/browser`) |
+| `npm test` | testes unitários (Karma/Jasmine) |
+| `npm run lint` | lint (ESLint) |
+| `npm run format` | formata o código (Prettier) |
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Deploy
 
-## Further help
+Publicado no Netlify a partir deste repositório (`netlify.toml`): build de
+produção e redirect de `/api/*` para a API no Render. Qualquer push na
+branch de deploy configurada no Netlify dispara um novo build.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Documentação adicional
+
+- [`TUTORIAL-FRONTEND.md`](TUTORIAL-FRONTEND.md) — tutorial de construção da UI passo a passo.
+- [`CHANGELOG.md`](CHANGELOG.md) — histórico de mudanças.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — convenções de contribuição.
+
+## Licença
+
+Distribuído sob a licença MIT — veja [`LICENSE`](LICENSE).

@@ -5,7 +5,9 @@
     <mat-form-field appearance="outline">
       <mat-label>Título</mat-label>
       <input matInput [(ngModel)]="data.task.title" name="title" cdkFocusInitial required />
-      <mat-error *ngIf="taskForm.controls['title']?.hasError('required')"> O título é obrigatório. </mat-error>
+      @if (taskForm.controls['title']?.hasError('required')) {
+        <mat-error> O título é obrigatório. </mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">

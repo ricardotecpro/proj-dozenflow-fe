@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { Inject, Injectable, Renderer2, RendererFactory2, DOCUMENT } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

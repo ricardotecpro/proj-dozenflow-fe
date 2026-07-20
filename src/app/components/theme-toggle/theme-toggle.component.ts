@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-theme-toggle',
-  standalone: true,
   imports: [CommonModule, MatSlideToggleModule, MatIconModule],
   templateUrl: './theme-toggle.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./theme-toggle.component.scss'],
 })
 export class ThemeToggleComponent {

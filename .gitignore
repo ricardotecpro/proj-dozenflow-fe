@@ -22,6 +22,9 @@ Desktop.ini
 *.swo
 *~
 
+# Artefatos de conflito de sincronização (Syncthing, Resilio, etc.)
+*.sync-conflict-*
+
 # Arquivos de documentação gerada (Jekyll, Hugo, etc.)
 _site/
 public/

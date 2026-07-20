@@ -1,73 +1,156 @@
-<div class="kanban-board" cdkDropListGroup>
-  <!-- Coluna A Fazer -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>A Fazer</h2>
-      <button
-        mat-icon-button
-        (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
-        matTooltip="Adicionar nova tarefa"
+@if (loading) {
+  <div class="board-loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Carregando tarefas…</p>
+  </div>
+} @else {
+  <div class="kanban-board" cdkDropListGroup>
+    <!-- Coluna A Fazer -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>
+          A Fazer <span class="task-count">{{ todoTasks.length }}</span>
+        </h2>
+        <button
+          mat-icon-button
+          (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
+          matTooltip="Adicionar nova tarefa"
+          aria-label="Adicionar nova tarefa em A Fazer"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+      <div
+        id="todoList"
+        cdkDropList
+        [cdkDropListData]="todoTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
       >
-        <mat-icon>add_circle</mat-icon>
-      </button>
-    </div>
-    <div id="todoList" cdkDropList [cdkDropListData]="todoTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card-wrapper" *ngFor="let task of todoTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+        @for (task of todoTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
+        @if (quickAdd.todo.open) {
+          <div class="quick-add">
+            <input
+              #todoQuickInput
+              type="text"
+              class="quick-add-input"
+              placeholder="Título do cartão"
+              [(ngModel)]="quickAdd.todo.title"
+              (keyup.enter)="submitQuickAdd('todo', todoTasks, TaskStatus.A_FAZER)"
+              (keyup.escape)="cancelQuickAdd('todo')"
+            />
+            <div class="quick-add-actions">
+              <button
+                mat-flat-button
+                color="primary"
+                (click)="submitQuickAdd('todo', todoTasks, TaskStatus.A_FAZER); todoQuickInput.focus()"
+              >
+                Adicionar
+              </button>
+              <button mat-icon-button (click)="cancelQuickAdd('todo')" aria-label="Cancelar adição rápida">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <button class="quick-add-trigger" (click)="openQuickAdd('todo')">
+            <mat-icon>add</mat-icon>
+            Adicionar cartão
+          </button>
+        }
       </div>
-      <div *ngIf="todoTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
-      </div>
     </div>
-  </div>
 
-  <!-- Coluna Em Andamento -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>Em Andamento</h2>
-      <button
-        mat-icon-button
-        (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
-        matTooltip="Adicionar nova tarefa"
+    <!-- Coluna Em Andamento -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>
+          Em Andamento <span class="task-count">{{ inProgressTasks.length }}</span>
+        </h2>
+        <button
+          mat-icon-button
+          (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
+          matTooltip="Adicionar nova tarefa"
+          aria-label="Adicionar nova tarefa em Em Andamento"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+      <div
+        id="inProgressList"
+        cdkDropList
+        [cdkDropListData]="inProgressTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
       >
-        <mat-icon>add_circle</mat-icon>
-      </button>
-    </div>
-    <div
-      id="inProgressList"
-      cdkDropList
-      [cdkDropListData]="inProgressTasks"
-      class="task-list"
-      (cdkDropListDropped)="drop($event)"
-    >
-      <div class="task-card-wrapper" *ngFor="let task of inProgressTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+        @for (task of inProgressTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
+        @if (quickAdd.inProgress.open) {
+          <div class="quick-add">
+            <input
+              #inProgressQuickInput
+              type="text"
+              class="quick-add-input"
+              placeholder="Título do cartão"
+              [(ngModel)]="quickAdd.inProgress.title"
+              (keyup.enter)="submitQuickAdd('inProgress', inProgressTasks, TaskStatus.EM_ANDAMENTO)"
+              (keyup.escape)="cancelQuickAdd('inProgress')"
+            />
+            <div class="quick-add-actions">
+              <button
+                mat-flat-button
+                color="primary"
+                (click)="
+                  submitQuickAdd('inProgress', inProgressTasks, TaskStatus.EM_ANDAMENTO); inProgressQuickInput.focus()
+                "
+              >
+                Adicionar
+              </button>
+              <button mat-icon-button (click)="cancelQuickAdd('inProgress')" aria-label="Cancelar adição rápida">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <button class="quick-add-trigger" (click)="openQuickAdd('inProgress')">
+            <mat-icon>add</mat-icon>
+            Adicionar cartão
+          </button>
+        }
       </div>
-      <div *ngIf="inProgressTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
-      </div>
     </div>
-  </div>
 
-  <!-- Coluna Concluída -->
-  <div class="kanban-column">
-    <div class="column-header">
-      <h2>Concluída</h2>
-      <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
-    </div>
-    <div id="doneList" cdkDropList [cdkDropListData]="doneTasks" class="task-list" (cdkDropListDropped)="drop($event)">
-      <div class="task-card-wrapper" *ngFor="let task of doneTasks" cdkDrag>
-        <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-        <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+    <!-- Coluna Concluída -->
+    <div class="kanban-column">
+      <div class="column-header">
+        <h2>
+          Concluída <span class="task-count">{{ doneTasks.length }}</span>
+        </h2>
+        <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
       </div>
-      <div *ngIf="doneTasks.length === 0" class="empty-list-message">
-        <mat-icon>inbox</mat-icon>
-        <span>Nenhuma tarefa aqui.</span>
+      <div
+        id="doneList"
+        cdkDropList
+        [cdkDropListData]="doneTasks"
+        class="task-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (task of doneTasks; track task) {
+          <div class="task-card-wrapper" cdkDrag>
+            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
+            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+          </div>
+        }
       </div>
     </div>
   </div>
-</div>
+}

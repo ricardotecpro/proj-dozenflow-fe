@@ -1,3 +1,5 @@
+// Estilo Trello: card compacto, só título + ícone de metadado (sem texto
+// de descrição inline, sem borda de status — a coluna já diz o status).
 .task-card {
   cursor: grab;
   transition:
@@ -5,36 +7,67 @@
     box-shadow 0.2s ease;
   position: relative;
   background-color: var(--background-card);
+  border-radius: 8px;
+  // Sombra sutil em repouso, igual ao Trello — não só no hover.
+  box-shadow: var(--mat-sys-level1);
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: var(--mat-sys-level3);
+
+    .task-menu-button {
+      opacity: 1;
+    }
   }
 
   &:active {
     cursor: grabbing;
   }
 
-  .mat-mdc-card-header {
-    padding: 16px 8px 8px 16px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .mat-mdc-card-title {
-    font-size: 1rem;
-    line-height: 1.4;
-    flex-grow: 1;
-    word-break: break-word;
-  }
-
-  .mat-mdc-card-content {
-    padding: 0 16px 16px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+  // Elevação mais forte enquanto o card está sendo arrastado.
+  &.cdk-drag-preview {
+    box-shadow: var(--mat-sys-level4);
   }
 }
 
+.task-card-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 6px 4px 6px 12px;
+}
+
+.task-card-title {
+  margin: 0;
+  padding: 2px 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  word-break: break-word;
+  flex-grow: 1;
+}
+
 .task-menu-button {
-  margin-left: 8px;
   flex-shrink: 0;
+  // Some no repouso, aparece no hover/foco — igual às quick actions do Trello.
+  opacity: 0.45;
+  transition: opacity 0.15s ease;
+
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+// Indicador de "tem descrição" (substitui o texto completo, como no Trello).
+.task-card-footer {
+  display: flex;
+  align-items: center;
+  padding: 0 4px 8px 12px;
+  color: var(--text-secondary);
+
+  .mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
 }
