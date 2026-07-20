@@ -52,8 +52,19 @@ export class TaskDialogComponent {
     this.data.task.labels = labels;
   }
 
+  // Cache do Date convertido: o datepicker é ligado via [(ngModel)], então este
+  // getter roda em todo ciclo de detecção de mudanças. Sem o cache, cada chamada
+  // devolveria uma instância de Date nova (mesmo valor, referência diferente), o
+  // que o datepicker interpreta como mudança externa a cada ciclo e reescreve o
+  // input — reagendando outro ciclo indefinidamente e travando a aba.
+  private dueDateCache: { iso: string | null; date: Date | null } = { iso: undefined as unknown as null, date: null };
+
   get dueDateValue(): Date | null {
-    return this.data.task.dueDate ? this.parseIsoDate(this.data.task.dueDate) : null;
+    const iso = this.data.task.dueDate ?? null;
+    if (this.dueDateCache.iso !== iso) {
+      this.dueDateCache = { iso, date: iso ? this.parseIsoDate(iso) : null };
+    }
+    return this.dueDateCache.date;
   }
 
   set dueDateValue(value: Date | null) {
