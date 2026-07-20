@@ -8,6 +8,14 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Anexos nas tarefas: nova aba "Anexos" no diálogo de edição
+  (`app-attachment-list`) com lista de arquivos (nome + tamanho),
+  baixar/excluir por item, e botão "Adicionar anexo" (`<input type="file">`
+  estilizado). Checagem de tamanho (5MB) já no cliente antes de enviar,
+  com mensagem amigável — o servidor segue sendo a fonte de verdade do
+  limite. Download baixa o arquivo como blob e dispara o download do
+  navegador via link temporário. Ícone de clipe + contador no card quando
+  há anexos.
 - Comentários nas tarefas: nova aba "Comentários" no diálogo de edição
   (`app-comment-list`) com lista (corpo + horário relativo, ex. "há 3
   horas") e campo pra adicionar; ícone de balão + contador no card quando

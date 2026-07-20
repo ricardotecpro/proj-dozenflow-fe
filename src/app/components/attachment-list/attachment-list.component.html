@@ -1,0 +1,33 @@
+<ul class="attachment-items">
+  @for (attachment of attachments; track attachment.id) {
+    <li>
+      <div class="attachment-info">
+        <mat-icon>description</mat-icon>
+        <span class="attachment-name">{{ attachment.fileName }}</span>
+        <span class="attachment-size">{{ formatSize(attachment.sizeBytes) }}</span>
+      </div>
+      <div class="attachment-actions">
+        <button
+          mat-icon-button
+          (click)="downloadAttachment(attachment)"
+          [attr.aria-label]="'Baixar ' + attachment.fileName"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          (click)="removeAttachment(attachment)"
+          [attr.aria-label]="'Remover ' + attachment.fileName"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </li>
+  }
+</ul>
+
+<button mat-stroked-button type="button" (click)="fileInput.click()">
+  <mat-icon>attach_file</mat-icon>
+  Adicionar anexo
+</button>
+<input #fileInput type="file" hidden (change)="onFileSelected($event)" />

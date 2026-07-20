@@ -19,6 +19,11 @@
             <app-comment-list [taskId]="data.task.id"></app-comment-list>
           </div>
         </mat-tab>
+        <mat-tab label="Anexos">
+          <div class="tab-content">
+            <app-attachment-list [taskId]="data.task.id"></app-attachment-list>
+          </div>
+        </mat-tab>
       </mat-tab-group>
     } @else {
       <ng-container [ngTemplateOutlet]="detailsFields"></ng-container>

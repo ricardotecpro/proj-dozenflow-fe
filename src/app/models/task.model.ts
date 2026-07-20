@@ -18,4 +18,5 @@ export interface Task {
   checklistTotal: number;
   checklistDone: number;
   commentCount: number;
+  attachmentCount: number;
 }

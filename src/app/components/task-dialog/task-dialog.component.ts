@@ -14,6 +14,7 @@ import { Label } from '../../models/label.model';
 import { LabelPickerComponent } from '../label-picker/label-picker.component';
 import { ChecklistEditorComponent } from '../checklist-editor/checklist-editor.component';
 import { CommentListComponent } from '../comment-list/comment-list.component';
+import { AttachmentListComponent } from '../attachment-list/attachment-list.component';
 
 export interface TaskDialogData {
   task: Partial<Task>;
@@ -35,6 +36,7 @@ export interface TaskDialogData {
     LabelPickerComponent,
     ChecklistEditorComponent,
     CommentListComponent,
+    AttachmentListComponent,
   ],
   templateUrl: './task-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

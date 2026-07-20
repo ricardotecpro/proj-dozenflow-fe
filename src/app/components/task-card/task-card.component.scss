@@ -147,7 +147,8 @@
 }
 
 // Contador de comentários — só ícone + número, sem fundo (estilo Trello).
-.comment-count {
+.comment-count,
+.attachment-count {
   display: inline-flex;
   align-items: center;
   gap: 3px;

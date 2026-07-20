@@ -28,6 +28,7 @@ describe('LabelPickerComponent', () => {
     checklistTotal: 0,
     checklistDone: 0,
     commentCount: 0,
+    attachmentCount: 0,
   };
 
   function setup(selectedLabels: Label[] = []) {
