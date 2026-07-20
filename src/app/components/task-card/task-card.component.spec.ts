@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TaskCardComponent } from './task-card.component';
-import { Task, TaskStatus } from '../../models/task.model';
+import { Task } from '../../models/task.model';
 
 describe('TaskCardComponent', () => {
   let fixture: ComponentFixture<TaskCardComponent>;
@@ -11,9 +11,11 @@ describe('TaskCardComponent', () => {
     id: 1,
     title: 'Write specs',
     description: 'Cover the kanban board components',
-    status: TaskStatus.A_FAZER,
+    listId: 1,
     taskOrder: 0,
+    archived: false,
     dueDate: null,
+    coverColor: null,
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
@@ -91,20 +93,6 @@ describe('TaskCardComponent', () => {
 
     const pill = fixture.debugElement.query(By.css('.due-date-pill'));
     expect(pill.classes['overdue']).toBeTrue();
-  });
-
-  it('marks the due date as done when the task is CONCLUIDA, even if the date is past', () => {
-    component.task = {
-      ...task,
-      description: '',
-      status: TaskStatus.CONCLUIDA,
-      dueDate: isoDateOffsetBy(-5),
-    };
-    fixture.detectChanges();
-
-    const pill = fixture.debugElement.query(By.css('.due-date-pill'));
-    expect(pill.classes['done']).toBeTrue();
-    expect(pill.classes['overdue']).toBeFalsy();
   });
 
   it('does not render label bars when the task has no labels', () => {
@@ -189,12 +177,12 @@ describe('TaskCardComponent', () => {
     expect(editSpy).toHaveBeenCalled();
   });
 
-  it('emits delete when delete() is triggered', () => {
-    const deleteSpy = jasmine.createSpy('delete');
-    component.delete.subscribe(deleteSpy);
+  it('emits archive when archive() is triggered', () => {
+    const archiveSpy = jasmine.createSpy('archive');
+    component.archive.subscribe(archiveSpy);
 
-    component.delete.emit();
+    component.archive.emit();
 
-    expect(deleteSpy).toHaveBeenCalled();
+    expect(archiveSpy).toHaveBeenCalled();
   });
 });

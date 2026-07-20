@@ -4,153 +4,138 @@
     <p>Carregando tarefas…</p>
   </div>
 } @else {
-  <div class="kanban-board" cdkDropListGroup>
-    <!-- Coluna A Fazer -->
-    <div class="kanban-column">
-      <div class="column-header">
-        <h2>
-          A Fazer <span class="task-count">{{ todoTasks.length }}</span>
-        </h2>
-        <button
-          mat-icon-button
-          (click)="openTaskDialog(undefined, todoTasks, TaskStatus.A_FAZER)"
-          matTooltip="Adicionar nova tarefa"
-          aria-label="Adicionar nova tarefa em A Fazer"
-        >
-          <mat-icon>add_circle</mat-icon>
-        </button>
-      </div>
-      <div
-        id="todoList"
-        cdkDropList
-        [cdkDropListData]="todoTasks"
-        class="task-list"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (task of todoTasks; track task) {
-          <div class="task-card-wrapper" cdkDrag>
-            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-          </div>
-        }
-        @if (quickAdd.todo.open) {
-          <div class="quick-add">
-            <input
-              #todoQuickInput
-              type="text"
-              class="quick-add-input"
-              placeholder="Título do cartão"
-              [(ngModel)]="quickAdd.todo.title"
-              (keyup.enter)="submitQuickAdd('todo', todoTasks, TaskStatus.A_FAZER)"
-              (keyup.escape)="cancelQuickAdd('todo')"
-            />
-            <div class="quick-add-actions">
-              <button
-                mat-flat-button
-                color="primary"
-                (click)="submitQuickAdd('todo', todoTasks, TaskStatus.A_FAZER); todoQuickInput.focus()"
-              >
-                Adicionar
-              </button>
-              <button mat-icon-button (click)="cancelQuickAdd('todo')" aria-label="Cancelar adição rápida">
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </div>
-        } @else {
-          <button class="quick-add-trigger" (click)="openQuickAdd('todo')">
-            <mat-icon>add</mat-icon>
-            Adicionar cartão
-          </button>
-        }
-      </div>
-    </div>
+  <div class="board-toolbar">
+    <button mat-button (click)="openArchivePanel()">
+      <mat-icon>inventory_2</mat-icon>
+      Itens arquivados
+    </button>
+  </div>
 
-    <!-- Coluna Em Andamento -->
-    <div class="kanban-column">
-      <div class="column-header">
-        <h2>
-          Em Andamento <span class="task-count">{{ inProgressTasks.length }}</span>
-        </h2>
-        <button
-          mat-icon-button
-          (click)="openTaskDialog(undefined, inProgressTasks, TaskStatus.EM_ANDAMENTO)"
-          matTooltip="Adicionar nova tarefa"
-          aria-label="Adicionar nova tarefa em Em Andamento"
-        >
-          <mat-icon>add_circle</mat-icon>
-        </button>
-      </div>
-      <div
-        id="inProgressList"
-        cdkDropList
-        [cdkDropListData]="inProgressTasks"
-        class="task-list"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (task of inProgressTasks; track task) {
-          <div class="task-card-wrapper" cdkDrag>
-            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
-          </div>
-        }
-        @if (quickAdd.inProgress.open) {
-          <div class="quick-add">
+  <div
+    class="kanban-board"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    [cdkDropListData]="lists"
+    (cdkDropListDropped)="dropList($event)"
+  >
+    @for (list of lists; track list.id) {
+      <div class="kanban-column" cdkDrag>
+        <div class="column-header" cdkDragHandle>
+          @if (editingListId === list.id) {
             <input
-              #inProgressQuickInput
+              #renameInput
               type="text"
-              class="quick-add-input"
-              placeholder="Título do cartão"
-              [(ngModel)]="quickAdd.inProgress.title"
-              (keyup.enter)="submitQuickAdd('inProgress', inProgressTasks, TaskStatus.EM_ANDAMENTO)"
-              (keyup.escape)="cancelQuickAdd('inProgress')"
+              class="list-title-input"
+              [(ngModel)]="editingListName"
+              (blur)="commitRenameList(list)"
+              (keyup.enter)="renameInput.blur()"
+              (keyup.escape)="cancelRenameList()"
             />
-            <div class="quick-add-actions">
-              <button
-                mat-flat-button
-                color="primary"
-                (click)="
-                  submitQuickAdd('inProgress', inProgressTasks, TaskStatus.EM_ANDAMENTO); inProgressQuickInput.focus()
-                "
-              >
-                Adicionar
-              </button>
-              <button mat-icon-button (click)="cancelQuickAdd('inProgress')" aria-label="Cancelar adição rápida">
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </div>
-        } @else {
-          <button class="quick-add-trigger" (click)="openQuickAdd('inProgress')">
-            <mat-icon>add</mat-icon>
-            Adicionar cartão
+          } @else {
+            <h2 (click)="startRenameList(list)">
+              {{ list.name }} <span class="task-count">{{ tasksByListId[list.id].length }}</span>
+            </h2>
+          }
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="listMenu"
+            matTooltip="Mais opções da lista"
+            [attr.aria-label]="'Mais opções da lista ' + list.name"
+          >
+            <mat-icon>more_horiz</mat-icon>
           </button>
-        }
+          <mat-menu #listMenu="matMenu">
+            <button mat-menu-item (click)="sortList(tasksByListId[list.id], list.id, 'title')">
+              <mat-icon>sort_by_alpha</mat-icon>
+              <span>Ordenar por nome</span>
+            </button>
+            <button mat-menu-item (click)="sortList(tasksByListId[list.id], list.id, 'dueDate')">
+              <mat-icon>schedule</mat-icon>
+              <span>Ordenar por vencimento</span>
+            </button>
+            @if (lists.length > 1) {
+              <button mat-menu-item (click)="archiveList(list)">
+                <mat-icon>archive</mat-icon>
+                <span>Arquivar lista</span>
+              </button>
+            }
+          </mat-menu>
+        </div>
+        <div
+          [id]="'taskList-' + list.id"
+          cdkDropList
+          [cdkDropListData]="tasksByListId[list.id]"
+          [cdkDropListConnectedTo]="taskListIds"
+          class="task-list"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (task of tasksByListId[list.id]; track task) {
+            <div class="task-card-wrapper" cdkDrag>
+              <app-task-card [task]="task" (edit)="openTaskDialog(task)" (archive)="archiveTask(task)"></app-task-card>
+              <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+            </div>
+          }
+          @if (quickAdd[list.id].open) {
+            <div class="quick-add">
+              <input
+                #quickInput
+                type="text"
+                class="quick-add-input"
+                placeholder="Título do cartão"
+                [(ngModel)]="quickAdd[list.id].title"
+                (keyup.enter)="submitQuickAdd(list.id, tasksByListId[list.id])"
+                (keyup.escape)="cancelQuickAdd(list.id)"
+              />
+              <div class="quick-add-actions">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  (click)="submitQuickAdd(list.id, tasksByListId[list.id]); quickInput.focus()"
+                >
+                  Adicionar
+                </button>
+                <button mat-icon-button (click)="cancelQuickAdd(list.id)" aria-label="Cancelar adição rápida">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+          } @else {
+            <button class="quick-add-trigger" (click)="openQuickAdd(list.id)">
+              <mat-icon>add</mat-icon>
+              Adicionar cartão
+            </button>
+          }
+        </div>
       </div>
-    </div>
+    }
 
-    <!-- Coluna Concluída -->
-    <div class="kanban-column">
-      <div class="column-header">
-        <h2>
-          Concluída <span class="task-count">{{ doneTasks.length }}</span>
-        </h2>
-        <!-- Opcional: Botão para adicionar diretamente aqui, se fizer sentido no fluxo -->
-      </div>
-      <div
-        id="doneList"
-        cdkDropList
-        [cdkDropListData]="doneTasks"
-        class="task-list"
-        (cdkDropListDropped)="drop($event)"
-      >
-        @for (task of doneTasks; track task) {
-          <div class="task-card-wrapper" cdkDrag>
-            <app-task-card [task]="task" (edit)="openTaskDialog(task)" (delete)="deleteTask(task)"></app-task-card>
-            <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+    <div class="kanban-column kanban-column--add">
+      @if (newList.open) {
+        <div class="quick-add">
+          <input
+            #newListInput
+            type="text"
+            class="quick-add-input"
+            placeholder="Nome da lista"
+            [(ngModel)]="newList.title"
+            (keyup.enter)="submitAddList(); newListInput.focus()"
+            (keyup.escape)="cancelAddList()"
+          />
+          <div class="quick-add-actions">
+            <button mat-flat-button color="primary" (click)="submitAddList(); newListInput.focus()">
+              Adicionar lista
+            </button>
+            <button mat-icon-button (click)="cancelAddList()" aria-label="Cancelar criação de lista">
+              <mat-icon>close</mat-icon>
+            </button>
           </div>
-        }
-      </div>
+        </div>
+      } @else {
+        <button class="quick-add-trigger" (click)="addList()">
+          <mat-icon>add</mat-icon>
+          Adicionar outra lista
+        </button>
+      }
     </div>
   </div>
 }

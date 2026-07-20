@@ -8,6 +8,7 @@
   position: relative;
   background-color: var(--background-card);
   border-radius: 8px;
+  overflow: hidden;
   // Sombra sutil em repouso, igual ao Trello — não só no hover.
   box-shadow: var(--mat-sys-level1);
 
@@ -28,6 +29,11 @@
   &.cdk-drag-preview {
     box-shadow: var(--mat-sys-level4);
   }
+}
+
+// Capa de cor do cartão, estilo Trello — faixa sólida no topo do card.
+.task-card-cover {
+  height: 32px;
 }
 
 // Barras coloridas das labels, acima do título — sem texto, igual ao
@@ -113,11 +119,6 @@
 
   &.overdue {
     background-color: #eb5a46;
-    color: #ffffff;
-  }
-
-  &.done {
-    background-color: #61bd4f;
     color: #ffffff;
   }
 }

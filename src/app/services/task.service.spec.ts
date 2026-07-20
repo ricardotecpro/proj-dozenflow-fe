@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { TaskService } from './task.service';
-import { Task, TaskStatus } from '../models/task.model';
+import { Task } from '../models/task.model';
 
 describe('TaskService', () => {
   let service: TaskService;
@@ -12,9 +12,11 @@ describe('TaskService', () => {
     id: 1,
     title: 'Sample',
     description: 'Sample description',
-    status: TaskStatus.A_FAZER,
+    listId: 1,
     taskOrder: 0,
+    archived: false,
     dueDate: null,
+    coverColor: null,
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
@@ -45,7 +47,7 @@ describe('TaskService', () => {
   });
 
   it('createTask() issues a POST with the task payload', () => {
-    const payload: Partial<Task> = { title: 'New', status: TaskStatus.A_FAZER, taskOrder: 1 };
+    const payload: Partial<Task> = { title: 'New', listId: 1, taskOrder: 1 };
 
     service.createTask(payload).subscribe((task) => {
       expect(task).toEqual(sampleTask);
@@ -76,6 +78,36 @@ describe('TaskService', () => {
     const req = httpMock.expectOne('/api/tasks/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
+  });
+
+  it('getArchivedTasks() issues a GET to /api/tasks/archived', () => {
+    service.getArchivedTasks().subscribe((tasks) => {
+      expect(tasks).toEqual([sampleTask]);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/archived');
+    expect(req.request.method).toBe('GET');
+    req.flush([sampleTask]);
+  });
+
+  it('archiveTask() issues a POST to /api/tasks/:id/archive', () => {
+    service.archiveTask(1).subscribe((task) => {
+      expect(task).toEqual(sampleTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/1/archive');
+    expect(req.request.method).toBe('POST');
+    req.flush(sampleTask);
+  });
+
+  it('restoreTask() issues a POST to /api/tasks/:id/restore', () => {
+    service.restoreTask(1).subscribe((task) => {
+      expect(task).toEqual(sampleTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/1/restore');
+    expect(req.request.method).toBe('POST');
+    req.flush(sampleTask);
   });
 
   it('attachLabel() issues a POST to /api/tasks/:id/labels/:labelId', () => {
