@@ -1,0 +1,27 @@
+<ul class="comment-items">
+  @for (comment of comments; track comment.id) {
+    <li>
+      <div class="comment-body">
+        <p>{{ comment.body }}</p>
+        <span class="comment-timestamp">{{ relativeTime(comment.createdAt) }}</span>
+      </div>
+      <button
+        mat-icon-button
+        (click)="removeComment(comment)"
+        [attr.aria-label]="'Remover comentário'"
+        class="remove-comment-button"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  }
+</ul>
+
+<div class="add-comment">
+  <textarea
+    placeholder="Escrever um comentário..."
+    [(ngModel)]="newCommentBody"
+    aria-label="Novo comentário"
+  ></textarea>
+  <button mat-flat-button color="primary" (click)="addComment()">Comentar</button>
+</div>

@@ -1,4 +1,11 @@
 <mat-card class="task-card">
+  @if (task.labels.length) {
+    <div class="task-card-labels">
+      @for (label of task.labels; track label.id) {
+        <span class="label-bar" [style.background-color]="label.colorHex" [matTooltip]="label.name ?? ''"></span>
+      }
+    </div>
+  }
   <div class="task-card-body">
     <p class="task-card-title">{{ task.title }}</p>
     <button
@@ -10,9 +17,39 @@
       <mat-icon>more_vert</mat-icon>
     </button>
   </div>
-  @if (task.description) {
-    <div class="task-card-footer" matTooltip="Tem descrição">
-      <mat-icon>subject</mat-icon>
+  @if (task.description || dueDateStatus || task.checklistTotal || task.commentCount || task.attachmentCount) {
+    <div class="task-card-footer">
+      @if (dueDateStatus) {
+        <span class="due-date-pill" [class]="dueDateStatus" matTooltip="Data de vencimento">
+          <mat-icon>schedule</mat-icon>
+          {{ dueDateLabel }}
+        </span>
+      }
+      @if (task.checklistTotal) {
+        <span
+          class="checklist-badge"
+          [class.checklist-complete]="task.checklistDone === task.checklistTotal"
+          matTooltip="Checklist"
+        >
+          <mat-icon>checklist</mat-icon>
+          {{ task.checklistDone }}/{{ task.checklistTotal }}
+        </span>
+      }
+      @if (task.commentCount) {
+        <span class="comment-count" matTooltip="Comentários">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          {{ task.commentCount }}
+        </span>
+      }
+      @if (task.attachmentCount) {
+        <span class="attachment-count" matTooltip="Anexos">
+          <mat-icon>attach_file</mat-icon>
+          {{ task.attachmentCount }}
+        </span>
+      }
+      @if (task.description) {
+        <mat-icon matTooltip="Tem descrição">subject</mat-icon>
+      }
     </div>
   }
   <mat-menu #taskMenu="matMenu">

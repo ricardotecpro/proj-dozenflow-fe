@@ -2,18 +2,32 @@
 
 <form #taskForm="ngForm">
   <mat-dialog-content>
-    <mat-form-field appearance="outline">
-      <mat-label>Título</mat-label>
-      <input matInput [(ngModel)]="data.task.title" name="title" cdkFocusInitial required />
-      @if (taskForm.controls['title']?.hasError('required')) {
-        <mat-error> O título é obrigatório. </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Descrição</mat-label>
-      <textarea matInput [(ngModel)]="data.task.description" name="description"></textarea>
-    </mat-form-field>
+    @if (data.task.id) {
+      <mat-tab-group>
+        <mat-tab label="Detalhes">
+          <div class="tab-content">
+            <ng-container [ngTemplateOutlet]="detailsFields"></ng-container>
+          </div>
+        </mat-tab>
+        <mat-tab label="Checklist">
+          <div class="tab-content">
+            <app-checklist-editor [taskId]="data.task.id"></app-checklist-editor>
+          </div>
+        </mat-tab>
+        <mat-tab label="Comentários">
+          <div class="tab-content">
+            <app-comment-list [taskId]="data.task.id"></app-comment-list>
+          </div>
+        </mat-tab>
+        <mat-tab label="Anexos">
+          <div class="tab-content">
+            <app-attachment-list [taskId]="data.task.id"></app-attachment-list>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    } @else {
+      <ng-container [ngTemplateOutlet]="detailsFields"></ng-container>
+    }
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
@@ -23,3 +37,44 @@
     </button>
   </mat-dialog-actions>
 </form>
+
+<ng-template #detailsFields>
+  <mat-form-field appearance="outline">
+    <mat-label>Título</mat-label>
+    <input matInput [(ngModel)]="data.task.title" name="title" cdkFocusInitial required />
+    @if (taskForm.controls['title']?.hasError('required')) {
+      <mat-error> O título é obrigatório. </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Descrição</mat-label>
+    <textarea matInput [(ngModel)]="data.task.description" name="description"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Data de vencimento</mat-label>
+    <input matInput [matDatepicker]="dueDatePicker" [(ngModel)]="dueDateValue" name="dueDate" />
+    <mat-hint>DD/MM/AAAA</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+    <mat-datepicker #dueDatePicker></mat-datepicker>
+  </mat-form-field>
+
+  @if (data.task.id) {
+    <div class="label-row">
+      <span class="label-row-title">Labels</span>
+      @for (label of data.task.labels; track label.id) {
+        <span
+          class="label-chip"
+          [style.background-color]="label.colorHex"
+          [matTooltip]="label.name ?? 'Label sem nome'"
+        ></span>
+      }
+      <app-label-picker
+        [taskId]="data.task.id"
+        [selectedLabels]="data.task.labels ?? []"
+        (labelsChanged)="onLabelsChanged($event)"
+      ></app-label-picker>
+    </div>
+  }
+</ng-template>

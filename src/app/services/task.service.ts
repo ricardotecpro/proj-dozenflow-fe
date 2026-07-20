@@ -28,4 +28,12 @@ export class TaskService {
   deleteTask(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  attachLabel(taskId: number, labelId: number): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/${taskId}/labels/${labelId}`, {});
+  }
+
+  detachLabel(taskId: number, labelId: number): Observable<Task> {
+    return this.http.delete<Task>(`${this.apiUrl}/${taskId}/labels/${labelId}`);
+  }
 }

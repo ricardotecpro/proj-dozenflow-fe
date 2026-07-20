@@ -14,6 +14,12 @@ describe('TaskService', () => {
     description: 'Sample description',
     status: TaskStatus.A_FAZER,
     taskOrder: 0,
+    dueDate: null,
+    labels: [],
+    checklistTotal: 0,
+    checklistDone: 0,
+    commentCount: 0,
+    attachmentCount: 0,
   };
 
   beforeEach(() => {
@@ -70,5 +76,25 @@ describe('TaskService', () => {
     const req = httpMock.expectOne('/api/tasks/1');
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
+  });
+
+  it('attachLabel() issues a POST to /api/tasks/:id/labels/:labelId', () => {
+    service.attachLabel(1, 2).subscribe((task) => {
+      expect(task).toEqual(sampleTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/1/labels/2');
+    expect(req.request.method).toBe('POST');
+    req.flush(sampleTask);
+  });
+
+  it('detachLabel() issues a DELETE to /api/tasks/:id/labels/:labelId', () => {
+    service.detachLabel(1, 2).subscribe((task) => {
+      expect(task).toEqual(sampleTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/1/labels/2');
+    expect(req.request.method).toBe('DELETE');
+    req.flush(sampleTask);
   });
 });

@@ -172,6 +172,12 @@ export class KanbanBoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: Partial<Task> | undefined) => {
       if (!result) {
+        // Labels/checklist mudam direto contra a API a partir do diálogo,
+        // fora do fluxo de salvar/cancelar — mesmo em "Cancelar", recarrega
+        // pra refletir qualquer mudança desse tipo que já foi persistida.
+        if (!isNew) {
+          this.loadTasks();
+        }
         return;
       }
 

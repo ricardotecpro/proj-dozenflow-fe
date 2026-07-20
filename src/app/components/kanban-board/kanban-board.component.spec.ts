@@ -7,6 +7,19 @@ import { TaskService } from '../../services/task.service';
 import { NotificationService } from '../../services/notification.service';
 import { Task, TaskStatus } from '../../models/task.model';
 
+function makeTask(overrides: Partial<Task> & Pick<Task, 'id' | 'title' | 'status' | 'taskOrder'>): Task {
+  return {
+    description: '',
+    dueDate: null,
+    labels: [],
+    checklistTotal: 0,
+    checklistDone: 0,
+    commentCount: 0,
+    attachmentCount: 0,
+    ...overrides,
+  };
+}
+
 describe('KanbanBoardComponent', () => {
   let fixture: ComponentFixture<KanbanBoardComponent>;
   let component: KanbanBoardComponent;
@@ -21,10 +34,10 @@ describe('KanbanBoardComponent', () => {
     // array returned by getTasks() in place, so a shared array would leak
     // ordering between tests.
     tasks = [
-      { id: 1, title: 'Todo 1', description: '', status: TaskStatus.A_FAZER, taskOrder: 1 },
-      { id: 2, title: 'Todo 0', description: '', status: TaskStatus.A_FAZER, taskOrder: 0 },
-      { id: 3, title: 'In progress', description: '', status: TaskStatus.EM_ANDAMENTO, taskOrder: 0 },
-      { id: 4, title: 'Done', description: '', status: TaskStatus.CONCLUIDA, taskOrder: 0 },
+      makeTask({ id: 1, title: 'Todo 1', status: TaskStatus.A_FAZER, taskOrder: 1 }),
+      makeTask({ id: 2, title: 'Todo 0', status: TaskStatus.A_FAZER, taskOrder: 0 }),
+      makeTask({ id: 3, title: 'In progress', status: TaskStatus.EM_ANDAMENTO, taskOrder: 0 }),
+      makeTask({ id: 4, title: 'Done', status: TaskStatus.CONCLUIDA, taskOrder: 0 }),
     ];
 
     taskServiceSpy = jasmine.createSpyObj('TaskService', ['getTasks', 'createTask', 'updateTask', 'deleteTask']);
@@ -163,6 +176,27 @@ describe('KanbanBoardComponent', () => {
     component.openTaskDialog(existingTask);
 
     expect(notificationServiceSpy.error).toHaveBeenCalledWith('Não foi possível atualizar a tarefa.');
+  });
+
+  it('openTaskDialog() reloads tasks when an existing task dialog is cancelled (labels/checklist may have changed)', () => {
+    fixture.detectChanges();
+    const existingTask = tasks.find((t) => t.id === 1)!;
+    dialogSpy.open.and.returnValue({ afterClosed: () => of(undefined) } as MatDialogRef<unknown>);
+    taskServiceSpy.getTasks.calls.reset();
+
+    component.openTaskDialog(existingTask);
+
+    expect(taskServiceSpy.getTasks).toHaveBeenCalled();
+  });
+
+  it('openTaskDialog() does not reload tasks when a new task dialog is cancelled', () => {
+    fixture.detectChanges();
+    dialogSpy.open.and.returnValue({ afterClosed: () => of(undefined) } as MatDialogRef<unknown>);
+    taskServiceSpy.getTasks.calls.reset();
+
+    component.openTaskDialog(undefined, component.todoTasks, TaskStatus.A_FAZER);
+
+    expect(taskServiceSpy.getTasks).not.toHaveBeenCalled();
   });
 
   it('openQuickAdd() opens the field and cancelQuickAdd() resets it', () => {

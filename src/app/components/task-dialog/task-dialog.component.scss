@@ -3,6 +3,31 @@ mat-form-field {
   margin-bottom: 1rem;
 }
 
+.tab-content {
+  padding: 16px 4px 4px;
+}
+
 textarea {
   min-height: 100px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.label-row-title {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-right: 4px;
+}
+
+.label-chip {
+  display: inline-block;
+  width: 32px;
+  height: 12px;
+  border-radius: 3px;
 }

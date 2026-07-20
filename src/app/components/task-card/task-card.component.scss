@@ -30,6 +30,21 @@
   }
 }
 
+// Barras coloridas das labels, acima do título — sem texto, igual ao
+// estilo compacto do Trello (o nome aparece só no tooltip).
+.task-card-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 12px 0;
+}
+
+.label-bar {
+  width: 32px;
+  height: 8px;
+  border-radius: 3px;
+}
+
 .task-card-body {
   display: flex;
   align-items: flex-start;
@@ -58,10 +73,11 @@
   }
 }
 
-// Indicador de "tem descrição" (substitui o texto completo, como no Trello).
+// Indicadores de metadado (prazo, "tem descrição"), como no Trello.
 .task-card-footer {
   display: flex;
   align-items: center;
+  gap: 6px;
   padding: 0 4px 8px 12px;
   color: var(--text-secondary);
 
@@ -69,5 +85,78 @@
     font-size: 18px;
     width: 18px;
     height: 18px;
+  }
+}
+
+// Pill de data de vencimento — cor conforme a urgência, igual ao Trello.
+.due-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px 1px 4px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.6;
+  background-color: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.due-soon {
+    background-color: #f2d600;
+    color: #2b2400;
+  }
+
+  &.overdue {
+    background-color: #eb5a46;
+    color: #ffffff;
+  }
+
+  &.done {
+    background-color: #61bd4f;
+    color: #ffffff;
+  }
+}
+
+// Badge de progresso do checklist — fica verde quando 100% concluído.
+.checklist-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px 1px 4px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.6;
+  background-color: color-mix(in srgb, var(--text-secondary) 12%, transparent);
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.checklist-complete {
+    background-color: #61bd4f;
+    color: #ffffff;
+  }
+}
+
+// Contador de comentários — só ícone + número, sem fundo (estilo Trello).
+.comment-count,
+.attachment-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
   }
 }

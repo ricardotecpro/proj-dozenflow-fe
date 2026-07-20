@@ -8,6 +8,39 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Anexos nas tarefas: nova aba "Anexos" no diálogo de edição
+  (`app-attachment-list`) com lista de arquivos (nome + tamanho),
+  baixar/excluir por item, e botão "Adicionar anexo" (`<input type="file">`
+  estilizado). Checagem de tamanho (5MB) já no cliente antes de enviar,
+  com mensagem amigável — o servidor segue sendo a fonte de verdade do
+  limite. Download baixa o arquivo como blob e dispara o download do
+  navegador via link temporário. Ícone de clipe + contador no card quando
+  há anexos.
+- Comentários nas tarefas: nova aba "Comentários" no diálogo de edição
+  (`app-comment-list`) com lista (corpo + horário relativo, ex. "há 3
+  horas") e campo pra adicionar; ícone de balão + contador no card quando
+  há comentários. Sem edição, só adicionar/excluir — qualquer pessoa pode
+  excluir qualquer comentário, mesmo modelo sem dono já usado em
+  labels/checklist.
+- Checklist nas tarefas: editor de checklist (`app-checklist-editor`, novo)
+  com checkbox por item, adicionar/remover, e um contador "X/Y concluídos";
+  badge "☑ 2/5" no card (fica verde quando 100% concluído). O diálogo de
+  edição de tarefa passou a usar `MatTabsModule` (abas "Detalhes" e
+  "Checklist") só quando a tarefa já existe — criar uma tarefa nova
+  continua sendo o formulário simples de antes, sem abas.
+- Labels coloridas nas tarefas: barras coloridas acima do título do card
+  (sem texto, estilo Trello compacto — o nome aparece só no tooltip),
+  seletor de labels (`app-label-picker`, novo) no diálogo de edição com um
+  grid de swatches do catálogo do board, aplicando/removendo a associação
+  imediatamente ao clicar (sem precisar salvar o diálogo). Só disponível
+  ao editar uma tarefa já existente — igual ao Trello, uma tarefa nova
+  precisa existir antes de poder receber labels.
+- Data de vencimento opcional na tarefa: seletor de data (`MatDatepickerModule`,
+  locale `pt-BR`) no diálogo de edição, e um pill colorido no card mostrando
+  a data (cinza padrão, amarelo a ≤2 dias do prazo, vermelho se vencida,
+  verde se a tarefa está concluída). Primeiro de uma série de recursos
+  novos de card estilo Trello (labels, checklist, comentários e anexos vêm
+  a seguir).
 - `README.md` com instruções reais de setup, scripts e deploy.
 - `LICENSE` (MIT), `CONTRIBUTING.md` e este `CHANGELOG.md`.
 - `environment.ts`/`environment.prod.ts` deixando explícita a configuração
