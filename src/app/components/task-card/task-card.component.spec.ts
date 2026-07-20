@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TaskCardComponent } from './task-card.component';
 import { Task } from '../../models/task.model';
 
@@ -16,6 +18,8 @@ describe('TaskCardComponent', () => {
     archived: false,
     dueDate: null,
     coverColor: null,
+    coverSize: null,
+    coverAttachmentId: null,
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
@@ -35,6 +39,7 @@ describe('TaskCardComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TaskCardComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
     fixture = TestBed.createComponent(TaskCardComponent);
     component = fixture.componentInstance;

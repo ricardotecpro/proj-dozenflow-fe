@@ -63,10 +63,14 @@ $dozenflow-tertiary: mat.$violet-palette;
 
 /* Global styles */
 body {
-  // --board-background é setado via BoardBackgroundService (inline style,
-  // maior especificidade possível) quando o usuário escolhe uma cor de
-  // fundo customizada para o board; sem escolha, cai no fundo do tema.
+  // --board-background(-image) são setados via BoardBackgroundService
+  // (inline style, maior especificidade possível) quando o usuário escolhe
+  // uma cor/imagem customizada para o board; sem escolha, cai no fundo do
+  // tema. --board-background-image só existe quando uma imagem está ativa.
   background-color: var(--board-background, var(--background-primary));
+  background-image: var(--board-background-image, none);
+  background-size: cover;
+  background-position: center;
   color: var(--text-primary);
   // mat.theme() só define o token de fonte para os componentes Material
   // consumirem internamente — nunca aplica em elementos genéricos (p, h2,

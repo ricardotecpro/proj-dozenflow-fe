@@ -60,6 +60,59 @@
     <mat-datepicker #dueDatePicker></mat-datepicker>
   </mat-form-field>
 
+  <div class="cover-row">
+    <span class="label-row-title">Capa</span>
+    <div class="cover-swatches">
+      <button
+        type="button"
+        class="cover-swatch cover-swatch-none"
+        [class.selected]="!data.task.coverColor && !data.task.coverAttachmentId"
+        matTooltip="Sem capa"
+        aria-label="Remover capa"
+        (click)="clearCover()"
+      >
+        <mat-icon>block</mat-icon>
+      </button>
+      @for (option of coverColorOptions; track option.color) {
+        <button
+          type="button"
+          class="cover-swatch"
+          [class.selected]="data.task.coverColor === option.color"
+          [style.background-color]="option.color"
+          [matTooltip]="option.name"
+          [attr.aria-label]="'Capa ' + option.name"
+          (click)="setCoverColor(option.color)"
+        ></button>
+      }
+    </div>
+    @if (imageAttachments.length) {
+      <div class="cover-swatches cover-swatches-images">
+        @for (attachment of imageAttachments; track attachment.id) {
+          <button
+            type="button"
+            class="cover-swatch cover-swatch-image"
+            [class.selected]="data.task.coverAttachmentId === attachment.id"
+            [matTooltip]="attachment.fileName"
+            [attr.aria-label]="'Capa ' + attachment.fileName"
+            (click)="setCoverAttachment(attachment.id)"
+          >
+            <img [src]="attachmentService.viewUrl(data.task.id!, attachment.id)" [alt]="attachment.fileName" />
+          </button>
+        }
+      </div>
+    }
+    @if (data.task.coverColor || data.task.coverAttachmentId) {
+      <mat-button-toggle-group
+        class="cover-size-toggle"
+        [value]="data.task.coverSize ?? 'HEADER'"
+        (change)="setCoverSize($event)"
+      >
+        <mat-button-toggle value="HEADER">Cabeçalho</mat-button-toggle>
+        <mat-button-toggle value="FULL">Capa cheia</mat-button-toggle>
+      </mat-button-toggle-group>
+    }
+  </div>
+
   @if (data.task.id) {
     <div class="label-row">
       <span class="label-row-title">Labels</span>

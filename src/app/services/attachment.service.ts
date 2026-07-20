@@ -26,6 +26,11 @@ export class AttachmentService {
     return this.http.get(`${this.apiUrl}/${taskId}/attachments/${attachmentId}/download`, { responseType: 'blob' });
   }
 
+  /** Direct, cacheable URL for inline display (e.g. <img src>/background-image) — not an HTTP call. */
+  viewUrl(taskId: number, attachmentId: number): string {
+    return `${this.apiUrl}/${taskId}/attachments/${attachmentId}/view`;
+  }
+
   deleteAttachment(taskId: number, attachmentId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${taskId}/attachments/${attachmentId}`);
   }

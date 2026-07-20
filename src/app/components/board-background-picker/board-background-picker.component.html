@@ -27,4 +27,22 @@
       </button>
     }
   </div>
+  <div class="menu-divider"></div>
+  <button type="button" mat-menu-item (click)="fileInput.click()">
+    <mat-icon>image</mat-icon>
+    <span>Enviar imagem</span>
+  </button>
+  <input
+    hidden
+    type="file"
+    accept="image/png,image/jpeg,image/gif,image/webp"
+    #fileInput
+    (change)="onFileSelected($event)"
+  />
+  @if (hasImage$ | async) {
+    <button type="button" mat-menu-item (click)="removeImage()">
+      <mat-icon>delete</mat-icon>
+      <span>Remover imagem</span>
+    </button>
+  }
 </mat-menu>
