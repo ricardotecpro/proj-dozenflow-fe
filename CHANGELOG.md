@@ -165,6 +165,12 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   código real do componente.
 
 ### Fixed
+- Repositório não estava na lista de "Repository access" do app "Render"
+  instalado no GitHub (só `proj-controle-de-gastos-01` estava autorizado).
+  O deploy real deste frontend é via Netlify, não Render, então isso não
+  afetava o site — mas corrigido por consistência com o mesmo problema
+  encontrado e corrigido no backend (`proj-dozenflow-be`), já que o app
+  Render está conectado à conta do GitHub como um todo.
 - `.gitignore` agora ignora artefatos `*.sync-conflict-*` para evitar que
   arquivos assim voltem a ser commitados por acidente.
 - Dark mode não aplicava no build de produção: a extração de CSS crítico do
