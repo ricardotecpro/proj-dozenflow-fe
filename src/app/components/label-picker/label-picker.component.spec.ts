@@ -26,6 +26,8 @@ describe('LabelPickerComponent', () => {
     archived: false,
     dueDate: null,
     coverColor: null,
+    coverSize: null,
+    coverAttachmentId: null,
     labels: [red],
     checklistTotal: 0,
     checklistDone: 0,

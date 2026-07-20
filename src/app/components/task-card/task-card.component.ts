@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Task } from '../../models/task.model';
+import { AttachmentService } from '../../services/attachment.service';
 
 export type DueDateStatus = 'overdue' | 'due-soon' | 'default';
 
@@ -22,6 +23,18 @@ export class TaskCardComponent {
   @Input({ required: true }) task!: Task;
   @Output() edit = new EventEmitter<void>();
   @Output() archive = new EventEmitter<void>();
+
+  constructor(private attachmentService: AttachmentService) {}
+
+  get isFullCover(): boolean {
+    return this.task.coverSize === 'FULL' && !!(this.task.coverColor || this.task.coverAttachmentId);
+  }
+
+  get coverImageUrl(): string | null {
+    return this.task.coverAttachmentId
+      ? this.attachmentService.viewUrl(this.task.id, this.task.coverAttachmentId)
+      : null;
+  }
 
   get dueDateStatus(): DueDateStatus | null {
     if (!this.task.dueDate) {

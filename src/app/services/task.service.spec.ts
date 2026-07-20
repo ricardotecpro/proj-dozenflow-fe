@@ -17,6 +17,8 @@ describe('TaskService', () => {
     archived: false,
     dueDate: null,
     coverColor: null,
+    coverSize: null,
+    coverAttachmentId: null,
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,

@@ -1,6 +1,20 @@
 <mat-card class="task-card">
   @if (task.coverColor) {
-    <div class="task-card-cover" [style.background-color]="task.coverColor"></div>
+    <div class="task-card-cover" [class.task-card-cover-full]="isFullCover" [style.background-color]="task.coverColor">
+      @if (isFullCover) {
+        <p class="task-card-title task-card-title-overlay">{{ task.title }}</p>
+      }
+    </div>
+  } @else if (coverImageUrl) {
+    <div
+      class="task-card-cover"
+      [class.task-card-cover-full]="isFullCover"
+      [style.background-image]="'url(' + coverImageUrl + ')'"
+    >
+      @if (isFullCover) {
+        <p class="task-card-title task-card-title-overlay">{{ task.title }}</p>
+      }
+    </div>
   }
   @if (task.labels.length) {
     <div class="task-card-labels">
@@ -10,7 +24,9 @@
     </div>
   }
   <div class="task-card-body">
-    <p class="task-card-title">{{ task.title }}</p>
+    @if (!isFullCover) {
+      <p class="task-card-title">{{ task.title }}</p>
+    }
     <button
       mat-icon-button
       [matMenuTriggerFor]="taskMenu"

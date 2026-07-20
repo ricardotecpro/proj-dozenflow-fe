@@ -32,8 +32,32 @@
 }
 
 // Capa de cor do cartão, estilo Trello — faixa sólida no topo do card.
+// background-size/position ficam inertes para cor sólida; passam a valer
+// quando a capa é uma imagem (ver Feature 2 - capa com anexo).
 .task-card-cover {
   height: 32px;
+  position: relative;
+  background-size: cover;
+  background-position: top center;
+}
+
+// Variante "capa cheia", estilo Trello — cobre o topo do card e recebe o
+// título sobreposto (ver .task-card-title-overlay).
+.task-card-cover-full {
+  height: 120px;
+}
+
+.task-card-title-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: #ffffff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
 }
 
 // Barras coloridas das labels, acima do título — sem texto, igual ao

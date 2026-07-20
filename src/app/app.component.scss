@@ -13,6 +13,9 @@
   // uma barra separada. --board-foreground vem do BoardBackgroundService
   // (branco quando uma cor customizada está ativa).
   background-color: var(--board-background, var(--background-primary));
+  background-image: var(--board-background-image, none);
+  background-size: cover;
+  background-position: center;
   color: var(--board-foreground, var(--text-primary));
 
   // Os ícones dentro dos widgets do header (tema, paleta) definem sua

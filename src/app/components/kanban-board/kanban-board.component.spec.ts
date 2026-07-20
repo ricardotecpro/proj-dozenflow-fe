@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { KanbanBoardComponent } from './kanban-board.component';
@@ -15,6 +16,8 @@ function makeTask(overrides: Partial<Task> & Pick<Task, 'id' | 'title' | 'listId
     archived: false,
     dueDate: null,
     coverColor: null,
+    coverSize: null,
+    coverAttachmentId: null,
     labels: [],
     checklistTotal: 0,
     checklistDone: 0,
@@ -82,6 +85,8 @@ describe('KanbanBoardComponent', () => {
     TestBed.configureTestingModule({
       imports: [KanbanBoardComponent],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: TaskService, useValue: taskServiceSpy },
         { provide: ListService, useValue: listServiceSpy },
         { provide: MatDialog, useValue: dialogSpy },
