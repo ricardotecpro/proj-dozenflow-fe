@@ -8,6 +8,20 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Capa do cartão estilo Trello (aba "Detalhes" do diálogo de edição,
+  `TaskDialogComponent`/`TaskCardComponent`): cor sólida da paleta fixa, ou
+  uma imagem já anexada à tarefa (aparece como swatch selecionável ao lado
+  das cores, com o nome do arquivo no tooltip), em dois tamanhos —
+  "Cabeçalho" ou "Capa cheia" (`MatButtonToggleGroup`, só aparece quando há
+  capa selecionada).
+- Upload de imagem de fundo do board (`BoardBackgroundPickerComponent` →
+  "Enviar imagem"), além da paleta de cores já existente. A escolha de fundo
+  (cor ou imagem) passou a ser persistida no backend via a nova API
+  `board-settings`, em vez de só `localStorage` — o `localStorage` continua
+  servindo de fast path/fallback enquanto a chamada ao backend não retorna
+  (ou se ele estiver fora do ar). Padrão para quem nunca escolheu nada
+  mudou de um fundo preto liso para "Ocean Blue", o mesmo azul clássico do
+  board de exemplo do Trello.
 - Listas dinâmicas do board, substituindo as 3 colunas fixas A Fazer/Em
   Andamento/Concluída por listas reais vindas do backend
   (`list.model.ts`, `list.service.ts`): adicionar lista ("+ Adicionar
@@ -165,6 +179,17 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   código real do componente.
 
 ### Fixed
+- **Travamento da aba ao selecionar uma data**: o getter `dueDateValue`
+  (`TaskDialogComponent`) construía uma instância de `Date` nova a cada
+  ciclo de detecção de mudanças. Ligado via `[(ngModel)]` ao
+  `mat-datepicker`, isso fazia cada ciclo entregar ao datepicker um objeto
+  "diferente" pro mesmo valor, que reescrevia o input e reagendava outro
+  ciclo — um loop sem fim que só começava a rodar depois que a tarefa já
+  tinha uma data (antes disso o getter sempre retornava `null`, sem gerar
+  objeto novo nenhum), por isso o travamento só aparecia ao efetivamente
+  escolher uma data no calendário. Corrigido cacheando o `Date` convertido,
+  só reprocessando quando a string ISO de origem (`task.dueDate`) muda de
+  fato.
 - Repositório não estava na lista de "Repository access" do app "Render"
   instalado no GitHub (só `proj-controle-de-gastos-01` estava autorizado).
   O deploy real deste frontend é via Netlify, não Render, então isso não
