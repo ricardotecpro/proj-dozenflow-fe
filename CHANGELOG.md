@@ -8,6 +8,19 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 ## [Unreleased]
 
 ### Added
+- Listas dinâmicas do board, substituindo as 3 colunas fixas A Fazer/Em
+  Andamento/Concluída por listas reais vindas do backend
+  (`list.model.ts`, `list.service.ts`): adicionar lista ("+ Adicionar
+  outra lista" no fim do board), renomear inline (clique no título vira
+  um campo editável), reordenar arrastando a coluna inteira (drag-and-drop
+  aninhado — uma lista de colunas horizontal por fora, uma lista de
+  cartões vertical por lista por dentro, cada uma com seu próprio grupo de
+  `cdkDropList` conectado), e arquivar lista (menu "..." → "Arquivar
+  lista", com diálogo de confirmação mostrando quantos cartões serão
+  arquivados junto — opção fica escondida quando só resta 1 lista ativa).
+- Painel "Itens arquivados" (`ArchivePanelComponent`, novo, acessível pelo
+  botão no topo do board): lista as listas e cartões arquivados
+  separadamente, com restaurar ou excluir permanentemente por item.
 - Anexos nas tarefas: nova aba "Anexos" no diálogo de edição
   (`app-attachment-list`) com lista de arquivos (nome + tamanho),
   baixar/excluir por item, e botão "Adicionar anexo" (`<input type="file">`
@@ -70,7 +83,8 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
   semibold). `-webkit-font-smoothing`/`text-rendering` globais, título do
   header e cabeçalhos de coluna com mais peso/tracking, título do card de
   tarefa destacado da descrição, `<title>` da página corrigido de
-  "DozenflowFe" (boilerplate) para "DozenFlow Board".
+  "DozenflowFe" (boilerplate) para "DozenFlow Board" (depois simplificado
+  para só "DozenFlow", ver `### Changed` abaixo).
 - Visual/recursos "estilo Trello" (escopo alinhado com o usuário: só
   frontend, sem mudar o modelo de dados do backend):
   - Seletor de cor de fundo do board (`BoardBackgroundService` +
@@ -106,6 +120,17 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
     preencher o espaço.
 
 ### Changed
+- `<title>`/cabeçalho do header simplificados de "DozenFlow Board" para
+  só "DozenFlow".
+- `app-task-card`: menu "..." do cartão trocou "Excluir" por "Arquivar"
+  (`archive` output no lugar de `delete`), consistente com o novo modelo
+  de arquivamento em vez de exclusão direta em toda a aplicação.
+- Indicador de prazo do card (`dueDateStatus`): removida a regra que
+  pintava de verde quando a tarefa estava na coluna "Concluída" — sem uma
+  coluna fixa "Concluída" fazendo sentido pra qualquer lista dinâmica, a
+  cor do prazo agora é só baseada na data (atrasado/perto do
+  prazo/normal), igual ao Trello de verdade (que também não tem esse
+  conceito embutido).
 - Angular, Angular Material/CDK e Angular CLI atualizados de 18.2 para
   22.0.7 (upgrade incremental major a major, com as migrações automáticas
   do próprio `ng update`), corrigindo vulnerabilidades XSS conhecidas do
@@ -117,6 +142,10 @@ e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/
 - `loadTasks()` no `KanbanBoardComponent` agora trata erro (antes não tinha
   handler nenhum); erros de criar/editar/excluir, que antes só iam para
   `console.error`, agora também notificam o usuário via snackbar.
+
+### Security
+- Branch padrão do repositório (`main`) protegido no GitHub: exige o
+  check `build-and-test` do CI passando antes de qualquer merge.
 
 ### Known issues
 - `npm audit` ainda aponta vulnerabilidades em dependências de
